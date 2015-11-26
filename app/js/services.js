@@ -1,5 +1,5 @@
 
-var ACTION_TMPL = "{query: {method:'GET', params:{__attrib__:'@__attrib__', project: @projectId}, isArray:true};";;
+var ACTION_TMPL = "var actions = {'query': {'method':'GET', 'params':{'__attrib__':'@__attrib__', 'project': '@projectId'}, 'isArray':true}}";
 
 var ProjectService = function() {
 	
@@ -7,12 +7,13 @@ var ProjectService = function() {
 		var url = path;
 		if(attrib)
 			url = url + '/:' + attrib; //'res/:resId';
-		
+
 		var paramDefaults = {};
 		var options = {};
 
 		var actionsStr = ACTION_TMPL.replace(/__attrib__/g, attrib);
-		var actions = eval(actionsStr);
+		// console.log(actionsStr);
+		eval(actionsStr);
 
 		var ret = $resource(url, [paramDefaults], [actions], options);
     	return ret;
@@ -41,7 +42,7 @@ var ProjectService = function() {
 };
 
 var ServiceFactory = function() {
-	var createProjectService = function() {
+	this.createProjectService = function() {
 		return new ProjectService();
 	};
 };

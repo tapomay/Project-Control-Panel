@@ -12,7 +12,6 @@
     "angular-route": "1.4.x",
     "angular-resource": "1.4.x",
     "angular-animate": "1.4.x",
-    "angular-bootstrap": "0.14.3+",
-    "diskdb": "^0.1.14"
+    "angular-bootstrap": "0.14.3"
   }
 }

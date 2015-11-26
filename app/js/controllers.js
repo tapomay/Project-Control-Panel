@@ -61,8 +61,8 @@ var Controllers = function(projectId) {
   this.taskController = new TaskController(projectId);
   this.jobController = new JobController(projectId);
 
-  Controllers.init = function(projectId) {
-    return new Controllers(projectId); 
-  };
+};
 
+Controllers.init = function(projectId) {
+  return new Controllers(projectId); 
 };

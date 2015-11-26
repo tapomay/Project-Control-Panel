@@ -2,15 +2,17 @@
   "name": "pcpBlue",
   "version": "0.1.0",
   "description": "Team Blue PCP Project. Main window",
-  "main": "hello-world-server.js",
+  "main": "http://localhost:8000/app/index.html",
   "devDependencies": {
-    "bower": "^1.3.1"
+    "bower": "^1.3.1",
+    "diskdb": "^0.1.14",
+    "enum": "2.2.0"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified! Configure in package.json\" && exit 1",
-    "start": "nw",
-    "init": "npm install",
-    "install": "bower install"
+    "postinstall": "bower install",
+    "prestart": "http-server -a 0.0.0.0 -p 8000 -s &",
+    "start": "nw .",
+    "test": "echo \"Error: no test specified! Configure in package.json\" && exit 1"
   },
   "repository": "",
   "keywords": [
@@ -31,9 +33,9 @@
         "max_height": 1080,
         "position": "center"
     },
-    "webkit": {
-        "plugin": false,
-        "java" : false,
-        "page-cache" : false
-    }
+  "webkit": {
+      "plugin": false,
+      "java" : false,
+      "page-cache" : false
+  }
 }

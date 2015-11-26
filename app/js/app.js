@@ -18,17 +18,18 @@ pcpBlueApp.config(['$routeProvider',
   function($routeProvider) {
     $routeProvider.
       when('/dashboard', {
-        templateUrl: 'partials/dashboard.html',        controller: 'ProjectCtrl'
+        templateUrl: 'partials/dashboard.html',
+        controller: 'ProjectCtrl'
       }).
-      when('/project/resources', {
+      when('/resources', {
         templateUrl: 'partials/resources.html',
         controller: 'ResourceCtrl'
-      }).q
-      when('/project/tasks', {
+      }).
+      when('/tasks', {
         templateUrl: 'partials/tasks.html',
         controller: 'TaskCtrl'
       }).
-      when('/project/jobs', {
+      when('/jobs', {
         templateUrl: 'partials/jobs.html',
         controller: 'JobCtrl'
       }).
@@ -46,7 +47,7 @@ pcpBlueServices.factory('Jobs', ['$resource', projectService.jobFactory]);
 
 var pcpBlueControllers = angular.module('pcpBlueControllers', []);
 pcpBlueControllers.controller('ProjectCtrl', ['$scope', 'Project', controllers.projectController.execute]);
-pcpBlueControllers.controller('ResourceCtrl', ['$scope', $routeParams, 'Resources', controllers.projectController.execute]);
-pcpBlueControllers.controller('TaskCtrl', ['$scope', $routeParams, 'Tasks', controllers.taskController.execute]);
-pcpBlueControllers.controller('JobCtrl', ['$scope', $routeParams, 'Jobs', controllers.jobController.execute]);
+pcpBlueControllers.controller('ResourceCtrl', ['$scope', '$routeParams', 'Resources', controllers.projectController.execute]);
+pcpBlueControllers.controller('TaskCtrl', ['$scope', '$routeParams', 'Tasks', controllers.taskController.execute]);
+pcpBlueControllers.controller('JobCtrl', ['$scope', '$routeParams', 'Jobs', controllers.jobController.execute]);
 
