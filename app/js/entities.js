@@ -1,49 +1,68 @@
 /**
  * New node file
  */
+// (function(){ 
+
+// var app = angular.module('pcpBlueApp',[]);
+
 var Enum = require('enum');
-var exports = module.exports = {};
+// var exports = module.exports = {};
 
 var ResourceType = new Enum([ 'LABOR', 'EQUIPMENT', 'MATERIAL' ]);
-exports.ResourceType = ResourceType;
+// exports.ResourceType = ResourceType;
 
 var Resource = function(name, cost, resourceType) {
-	var _name = name;
-	var _cost = cost;
-	var _resourceType = resourceType;
+	this.name = name;
+	this.cost = cost;
+	this.resourceType = resourceType;
 	
-	if (isNaN(_cost)) {
-		throw "Invalid cost: " + String(_cost);
+	if (isNaN(this.cost)) {
+		throw "Invalid cost: " + String(this.cost);
 	}
 
-	if (!(_resourceType in ResourceType)) {
-		throw "Invalid resourceType: " + String(_resourceType);
+	if (!(this.resourceType in ResourceType)) {
+		throw "Invalid resourceType: " + String(this.resourceType);
 	}
 
 	this.getName = function() {
-		return _name;
+		return this.name;
 	};
 
 	this.getCost = function() {
-		return _cost;
+		return this.cost;
 	};
 
 	this.getResourceType = function() {
-		return _resourceType;
+		return this.resourceType;
+	};
+
+	Resource.create = function(obj) {
+		var type = ResourceType.get(obj.resourceType);
+		var ret = new Resource(obj.name, obj.cost, type);
+		ret._id = obj._id;
+		return ret;
 	};
 };
-exports.Resource = Resource;
+// exports.Resource = Resource;
 
 var Task = function(name, description, durationDays, laborRequired,
 		equipmentRequired, materialRequired, deliverables) {
 
-	var _name = name;
-	var _description = description;
-	var _durationDays = durationDays;
-	var _laborRequired = laborRequired;
-	var _equipmentRequired = equipmentRequired;
-	var _materialRequired = materialRequired;
-	// var _deliverables = deliverables; //TODO:
+	Task.create = function(obj) {
+		var ret = new Task(obj.name, obj.description, obj.durationDays, obj.laborRequired,
+		obj.equipmentRequired, obj.materialRequired, obj.deliverables);
+		ret._id = obj._id;
+		return ret;
+	};
+
+	this.id = null;
+	this.name = name;
+	this.description = description;
+	this.durationDays = durationDays;
+	this.laborRequired = laborRequired;
+	this.equipmentRequired = equipmentRequired;
+	this.materialRequired = materialRequired;
+	// this.deliverables = deliverables; //TODO:
 
 	var _attribs = {
 		'duration' : _durationDays,
@@ -64,75 +83,83 @@ var Task = function(name, description, durationDays, laborRequired,
 	};
 
 	this.getName = function() {
-		return _name;
+		return this.name;
 	};
 
 	this.getDescription = function() {
-		return _description;
+		return this.description;
 	};
 
 	this.getDuration = function() {
-		return _durationDays;
+		return this.durationDays;
 	};
 
 	this.getlaborRequired = function() {
-		return _laborRequired;
+		return this.laborRequired;
 	};
 
 	this.getMaterialRequired = function() {
-		return _materialRequired;
+		return this.materialRequired;
 	};
 
 	this.getEquipmentRequired = function() {
-		return _equipmentRequired;
+		return this.equipmentRequired;
 	};
 };
-exports.Task = Task;
+// exports.Task = Task;
 
 var JobStates = new Enum([ 'READY', 'RUNNING', 'COMPLETE' ]);
-exports.JobStates = JobStates;
+// exports.JobStates = JobStates;
 
-var Job = function(name, task, startTime) {
-	var _name = name;
-	var _task = task;
-	var _startTime = startTime;
-	var _percentComplete = 0;
-	var _state = JobStates.READY;
+var Job = function(name, task, startTime, percentComplete, state) {
 
-	if (!(_task instanceof Task)) {
-		throw "Task Invalid: Must be a Task() - " + Object.keys(_task);
+	Job.create = function() {
+		var ret = new Job(obj.name, obj.task, obj.startTime, obj.percentComplete, obj.state);
+		ret._id = obj._id;
+		return ret;
+	};
+
+	this.name = name;
+	this.task = task;
+	this.startTime = startTime;
+	this.percentComplete = percentComplete;
+	this.state = state;
+
+	if (!(this.task instanceof Task)) {
+		throw "Task Invalid: Must be a Task() - " + Object.keys(this.task);
 	}
 
-	if (!(_startTime instanceof Date)) {
-		throw "StartTime Invalid: Must be a Date() - " + Object.keys(_startTime);
+	if (!(this.startTime instanceof Date)) {
+		throw "StartTime Invalid: Must be a Date() - " + Object.keys(this.startTime);
 	}
 
 	this.getName = function() {
-		return _name;
+		return this.name;
 	};
 
 	this.getTask = function() {
-		return _task;
+		return this.task;
 	};
 
 	this.getStartTime = function() {
-		return _startTime;
+		return this.startTime;
 	};
 
 	this.getPercentComplete = function() {
-		return _percentComplete;
+		return this.percentComplete;
 	};
 
 	this.getState = function() {
-		return _state;
+		return this.state;
 	};
 	
 	this.changeState = function(newState) {
 		if(!(newState in JobStates)) {
 			throw "Invalid JobState: " + String(newState);
 		}
-		this._state = newState;
+		this.state = newState;
 	};
 };
-exports.Job = Job;
+// exports.Job = Job;
 
+// })();
