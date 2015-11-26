@@ -11,7 +11,9 @@ var Enum = require('enum');
 var ResourceType = new Enum([ 'LABOR', 'EQUIPMENT', 'MATERIAL' ]);
 // exports.ResourceType = ResourceType;
 
-var Resource = function(name, cost, resourceType) {
+var Resource = function(projectId, name, cost, resourceType) {
+	
+	this.projectId = projectId;
 	this.name = name;
 	this.cost = cost;
 	this.resourceType = resourceType;
@@ -38,24 +40,24 @@ var Resource = function(name, cost, resourceType) {
 
 	Resource.create = function(obj) {
 		var type = ResourceType.get(obj.resourceType);
-		var ret = new Resource(obj.name, obj.cost, type);
+		var ret = new Resource(obj.projectId, obj.name, obj.cost, type);
 		ret._id = obj._id;
 		return ret;
 	};
 };
 // exports.Resource = Resource;
 
-var Task = function(name, description, durationDays, laborRequired,
+var Task = function(projectId, name, description, durationDays, laborRequired,
 		equipmentRequired, materialRequired, deliverables) {
 
 	Task.create = function(obj) {
-		var ret = new Task(obj.name, obj.description, obj.durationDays, obj.laborRequired,
+		var ret = new Task(obj.projectId, obj.name, obj.description, obj.durationDays, obj.laborRequired,
 		obj.equipmentRequired, obj.materialRequired, obj.deliverables);
 		ret._id = obj._id;
 		return ret;
 	};
 
-	this.id = null;
+	this.projectId = projectId;
 	this.name = name;
 	this.description = description;
 	this.durationDays = durationDays;
@@ -111,14 +113,14 @@ var Task = function(name, description, durationDays, laborRequired,
 var JobStates = new Enum([ 'READY', 'RUNNING', 'COMPLETE' ]);
 // exports.JobStates = JobStates;
 
-var Job = function(name, task, startTime, percentComplete, state) {
+var Job = function(projectId, name, task, startTime, percentComplete, state) {
 
 	Job.create = function() {
-		var ret = new Job(obj.name, obj.task, obj.startTime, obj.percentComplete, obj.state);
+		var ret = new Job(obj.projectId, obj.name, obj.task, obj.startTime, obj.percentComplete, obj.state);
 		ret._id = obj._id;
 		return ret;
 	};
-
+	this.projectId = projectId;
 	this.name = name;
 	this.task = task;
 	this.startTime = startTime;
