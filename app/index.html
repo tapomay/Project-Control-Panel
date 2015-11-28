@@ -19,28 +19,23 @@
   <script src="js/app.js"></script>
   
 </head>
+<style>
+
+ h1{
+  text-align: center;
+}
+
+h2{
+  text-align: center;
+}
+</style>
 <body>
   
-  <div class="row">
-      <h>PROJECT CONTROL PANEL - BLUE TEAM</h>
-  </div>
-
-  <div class="row">
-    <div class="col-sm-2">
-      <ul class="nav nav-pills nav-stacked">
-        <li class="active"><a href="#dashboard">Dashboard</a></li>
-        <li><a href="#resources">Resources</a></li>
-        <li><a href="#tasks">Tasks</a></li>
-        <li><a href="#jobs">Jobs</a></li>
-      </ul>
-    </div>
-
-    <div class="col-sm-8">
-      <div class="view-container">
-        <div ng-view class="view-frame"></div>
-      </div>
-    </div>
-  </div>
+ 
+      <h1>PROJECT CONTROL PANEL - BLUE TEAM</h1>
+      <h2 class="active"><a href="partials/dashboard.html"> Go To Dashboard</a></h2>
+        
+  
 
 </body>
 </html>
