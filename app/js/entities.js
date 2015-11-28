@@ -13,6 +13,13 @@ var ResourceType = new Enum([ 'LABOR', 'EQUIPMENT', 'MATERIAL' ]);
 
 var Resource = function(projectId, name, cost, resourceType) {
 	
+	Resource.create = function(obj) {
+		var type = ResourceType.get(obj.resourceType);
+		var ret = new Resource(obj.projectId, obj.name, obj.cost, type);
+		ret._id = obj._id;
+		return ret;
+	};
+
 	this.projectId = projectId;
 	this.name = name;
 	this.cost = cost;
@@ -38,12 +45,6 @@ var Resource = function(projectId, name, cost, resourceType) {
 		return this.resourceType;
 	};
 
-	Resource.create = function(obj) {
-		var type = ResourceType.get(obj.resourceType);
-		var ret = new Resource(obj.projectId, obj.name, obj.cost, type);
-		ret._id = obj._id;
-		return ret;
-	};
 };
 // exports.Resource = Resource;
 
@@ -115,7 +116,7 @@ var JobStates = new Enum([ 'READY', 'RUNNING', 'COMPLETE' ]);
 
 var Job = function(projectId, name, task, startTime, percentComplete, state) {
 
-	Job.create = function() {
+	Job.create = function(obj) {
 		var ret = new Job(obj.projectId, obj.name, obj.task, obj.startTime, obj.percentComplete, obj.state);
 		ret._id = obj._id;
 		return ret;

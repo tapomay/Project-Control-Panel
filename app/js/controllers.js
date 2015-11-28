@@ -2,43 +2,41 @@
 
 /* Controllers */
 
-var Controllers = function(projectId) {    
+var Controllers = function() {    
   
-  var _project = projectId;
-
   /**
     Controller for dashboard
   **/
-  var ProjectController = function(projectId){
-    var _project = projectId;
+  var ProjectController = function(){
 
     this.execute = function($scope, projectSvc) {
       //populate dashboard entities in $scope
-      $scope.jobs = projectSvc.query();
+      var d = new Date();
+      $scope.currentJobs = [];//projectSvc.getCurrentJobs(d);
+
     }
   };
 
   /**
     Controller for /resources
   **/
-  var ResourceController = function(projectId){
-    var _project = projectId;
+  var ResourceController = function(){
 
-    this.execute = function($scope, $routeParams, resourceSvc) {
+    this.execute = function($scope, $routeParams, projectSvc) {
       //populate dashboard entities in $scope
-      $scope.resources = resourceSvc.query();
+      $scope.resources = projectSvc.getAllResources();
+      window.console.log($scope.resources);
     }  
   };
 
   /**
     Controller for /tasks
   **/
-  var TaskController = function(projectId) {
-    var _project = projectId;
+  var TaskController = function() {
 
-    this.execute = function($scope, $routeParams, taskSvc) {
+    this.execute = function($scope, $routeParams, projectSvc) {
       //populate dashboard entities in $scope
-      $scope.tasks = taskSvc.getTasks(_project);
+      $scope.tasks = taskSvc.getTasks();
     }
 
   };
@@ -46,23 +44,24 @@ var Controllers = function(projectId) {
   /**
     Controller for /jobs
   **/
-  var JobController = function(projectId) {
-    var _project = projectId;
+  var JobController = function() {
 
     this.execute = function($scope, $routeParams, projectSvc) {
       //populate dashboard entities in $scope
-      $scope.jobs = projectSvc.getJobs(_project);
+      $scope.jobs = projectSvc.getJobs();
     }
   };
 
 
-  this.projectController = new ProjectController(projectId);
-  this.resourceController = new ResourceController(projectId);
-  this.taskController = new TaskController(projectId);
-  this.jobController = new JobController(projectId);
+  this.projectController = new ProjectController();
+  this.resourceController = new ResourceController();
+  this.taskController = new TaskController();
+  this.jobController = new JobController();
 
 };
 
-Controllers.init = function(projectId) {
-  return new Controllers(projectId); 
+Controllers._INSTANCE = new Controllers();
+
+Controllers.init = function() {
+  return Controllers._INSTANCE; 
 };

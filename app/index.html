@@ -2,7 +2,7 @@
 <html lang="en" ng-app="pcpBlueApp">
 <head>
   <meta charset="utf-8">
-  <title>Google Phone Gallery</title>
+  <title>PCP Blue</title>
   <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.css">
 
   <script src="bower_components/jquery/dist/jquery.js"></script>
@@ -10,6 +10,8 @@
   <script src="bower_components/angular-animate/angular-animate.js"></script>
   <script src="bower_components/angular-route/angular-route.js"></script>
   <script src="bower_components/angular-resource/angular-resource.js"></script>
+  <script src="js/entities.js"></script>
+  <script src="js/project.js"></script>
   <script src="js/animations.js"></script>
   <script src="js/controllers.js"></script>
   <script src="js/filters.js"></script>
@@ -18,13 +20,18 @@
   
 </head>
 <body>
+  
+  <div class="row">
+      <h>PROJECT CONTROL PANEL - BLUE TEAM</h>
+  </div>
+
   <div class="row">
     <div class="col-sm-2">
       <ul class="nav nav-pills nav-stacked">
-        <li class="active"><a href="dashboard">Dashboard</a></li>
-        <li><a href="resources">Resources</a></li>
-        <li><a href="tasks">Tasks</a></li>
-        <li><a href="jobs">Jobs</a></li>
+        <li class="active"><a href="#dashboard">Dashboard</a></li>
+        <li><a href="#resources">Resources</a></li>
+        <li><a href="#tasks">Tasks</a></li>
+        <li><a href="#jobs">Jobs</a></li>
       </ul>
     </div>
 

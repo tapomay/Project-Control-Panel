@@ -1,48 +1,63 @@
+'use strict';
 
-var ACTION_TMPL = "var actions = {'query': {'method':'GET', 'params':{'__attrib__':'@__attrib__', 'project': '@projectId'}, 'isArray':true}}";
+// var db = require('diskdb');
+// db.connect('collections', ['projects', 'resources', 'tasks', 'jobs']);
+// db.connect('collections', ['projects']);
 
 var ProjectService = function() {
 	
-	var buildResource = function($resource, path, attrib) {
-		var url = path;
-		if(attrib)
-			url = url + '/:' + attrib; //'res/:resId';
+	var db = require('diskdb');
+	db.connect('collections', ['projects']);
 
-		var paramDefaults = {};
-		var options = {};
+	var _project = null;
 
-		var actionsStr = ACTION_TMPL.replace(/__attrib__/g, attrib);
-		// console.log(actionsStr);
-		eval(actionsStr);
-
-		var ret = $resource(url, [paramDefaults], [actions], options);
-    	return ret;
+	this.loadProject = function(name) {
+		var projects = db.projects.find({'name':name});
+		if(projects.length == 0) {
+			_project = new Project(name, [], [], []);
+		} else {
+			var p = projects[0];
+			_project = Project.create(p);
+		}
+		alert('Loaded:' + _project.name);
 	};
 
-	this.resourceFactory = function($resource) {
-		var ret = buildResource($resource, 'res', 'resId');
-    	return ret;
-    };
+	this.saveProject = function(){
 
-	this.taskFactory = function($resource) {
-		var ret = buildResource($resource, 'tasks', 'taskId');
-    	return ret;
-    };
+	};
 
-	this.jobFactory = function($resource) {
-		var ret = buildResource($resource, 'jobs', 'jobId');
-    	return ret;
-    };
+	this.activeProject = function(){
+		return _project.name;
+	}
 
-	this.projectFactory = function($resource) {
-		var ret = buildResource($resource, 'project', 'projId');
-    	return ret;
-    };
+	var dummyData = function() {
+		var r1 = new Resource('DEMO_PROJECT_1', 'res1', 10, ResourceType.LABOR);		
+		var r2 = new Resource('DEMO_PROJECT_1', 'res2', 20, ResourceType.LABOR);
 
+		// var t1 = new Task();
+
+		// var j1 = new Job();
+
+		var p = new Project('DEMO_PROJECT_1', [r1,r2], [], [])
+		db.projects.save(p);
+	};
+
+	this.getAllResources = function() {
+		return _project.getAllResources();
+	};
+
+	this.getAllJobs = function() {
+		return _project.getAllJobs();
+	};
+
+	this.getAllTasks = function() {
+		return _project.getAllTasks();		
+	};
+	dummyData();
 };
 
+ProjectService._INSTANCE = new ProjectService();
+
 var ServiceFactory = function() {
-	this.createProjectService = function() {
-		return new ProjectService();
-	};
+	return ProjectService._INSTANCE;
 };
