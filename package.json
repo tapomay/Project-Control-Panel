@@ -26,12 +26,12 @@
   "window": {
         "toolbar": true,
         "resizable": true,
-        "width": 1200,
-        "height": 800,
+        "width": 1920,
+        "height": 1080,
         "min_width": 400,
         "min_height": 200,
-        "max_width": 1200,
-        "max_height": 800,
+        "max_width": 1920,
+        "max_height": 1080,
         "position": "center"
     },
   "webkit": {
