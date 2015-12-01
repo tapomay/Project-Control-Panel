@@ -23,14 +23,16 @@ var ProjectService = function() {
 	};
 
 	this.saveProject = function(){
-
+      
 	};
 
 	this.activeProject = function(){
-		return _project.name;
+      
+	return _project.name;
 	}
 
 	var dummyData = function() {
+		     
 		var r1 = new Resource('DEMO_PROJECT_1', 'res1', 10, ResourceType.LABOR);		
 		var r2 = new Resource('DEMO_PROJECT_1', 'res2', 20, ResourceType.LABOR);
 
@@ -43,6 +45,7 @@ var ProjectService = function() {
 	};
 
 	this.getAllResources = function() {
+		      
 		return _project.getAllResources();
 	};
 
@@ -53,6 +56,27 @@ var ProjectService = function() {
 	this.getAllTasks = function() {
 		return _project.getAllTasks();		
 	};
+
+	this.getProjectId = function() {
+		return _project.name;		
+	};
+	
+	this.addResource = function(resObj) {
+		var type = ResourceType.get(resObj.type);
+			
+		var r = new Resource(resObj.projectId, resObj.name, resObj.cost, resObj.type);
+		_project.addResource(r);
+	};
+
+	this.deleteResource = function(resObj) {
+		var type = ResourceType.get(resObj.type);
+			
+		var r = new Resource(resObj.projectId, resObj.name, resObj.cost, resObj.type);
+		_project.deleteResource(r);
+	};
+
+	
+	
 	dummyData();
 };
 

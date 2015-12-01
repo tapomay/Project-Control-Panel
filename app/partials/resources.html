@@ -7,18 +7,40 @@
 
     </div>
   </div>
+
+	<table id="myTableData"  border="1" cellpadding="2">
+    <tr>
+        <td>&nbsp;</td>
+        <td>&nbsp;</td>
+        <td><b>Resource Name</b></td>
+        <td><b>Resource Cost</b></td>
+        <td><b>Resource Type</b></td>		
+    </tr>
+<!--	
+	DO not know why ModelDemoCtrl.resources does not work :( 
+    <tr ng-repeat="resource in ModalDemoCtrl.resources">	
+-->
+    <tr ng-repeat="resource in resources">	
+		<td>
+		<button type="button" class="btn btn-default" ng-click="deleteResource(resource)">Delete</button>
+		</td>
+
+		<td>
+		<button type="button" class="btn btn-default" ng-click="editResource(resource)">Edit</button>
+		</td>		
+		
+		<td><b>{{resource.name}}</b></td>
+		<td><b>{{resource.cost}} </b></td>
+		<td><b>{{resource.resourceType}} </b></td>
+
+    </tr>
+	</table>  
+  
   <div class="row">
     <div class="col-md-10">
       <!--Body content-->
 
-      <ul class="row">
-        <li ng-repeat="res in resources | filter:query"
-            class="">
-            <div class="col-md-2">{{res.name}}</div>
-            <div class="col-md-2">{{res.cost}}</div>
-            <div class="col-md-2">{{res.resourceType}}</div>
-        </li>
-      </ul>
+	      <button type="button" class="btn btn-default" ng-click="open1($scope.uibModal)">Add Resources</button>
     </div>
   </div>
   
