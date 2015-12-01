@@ -11,7 +11,8 @@ var pcpBlueApp = angular.module('pcpBlueApp', [
   // 'pcpBlueAnimations',
   'pcpBlueControllers',
   // 'pcpBlueFilters',
-  'pcpBlueServices'
+  'pcpBlueServices', 
+  'ui.bootstrap'
 ]);
 
 var pcpBlueServices = angular.module('pcpBlueServices', []);
@@ -20,7 +21,9 @@ pcpBlueServices.factory('ProjectDataSvc', [ServiceFactory]);
 
 var pcpBlueControllers = angular.module('pcpBlueControllers', []);
 pcpBlueControllers.controller('ProjectCtrl', ['$scope', 'ProjectDataSvc', controllers.projectController.execute]);
-pcpBlueControllers.controller('ResourceCtrl', ['$scope', '$routeParams', 'ProjectDataSvc', controllers.resourceController.execute]);
+pcpBlueControllers.controller('ResourceCtrl', ['$scope', '$routeParams', '$uibModal', 'ProjectDataSvc', controllers.resourceController.execute]);
+pcpBlueControllers.controller('ModalInstanceCtrl', ['$scope', '$routeParams', '$uibModalInstance', 'ProjectDataSvc', controllers.modalInstanceController.execute]);
+pcpBlueControllers.controller('ModalEditInstanceCtrl', ['$scope', '$routeParams', '$uibModalInstance', 'ProjectDataSvc', 'name_passed', 'cost_passed', 'type_passed', controllers.modalEditInstanceController.execute]);
 pcpBlueControllers.controller('TaskCtrl', ['$scope', '$routeParams', 'ProjectDataSvc', controllers.taskController.execute]);
 pcpBlueControllers.controller('JobCtrl', ['$scope', '$routeParams', 'ProjectDataSvc', controllers.jobController.execute]);
 

@@ -52,7 +52,13 @@ var Project = function(name, resources, tasks, jobs) {
 	};
 	
 	this.addResource = function(resource) {
-		this.resources.push(resource);
+     		
+	this.resources.push(resource);
+	};
+
+	this.deleteResource = function(resource) {
+     	
+	this.resources.pop(resource);
 	};
 	
 	this.addJob = function(job) {
