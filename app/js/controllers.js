@@ -164,7 +164,7 @@ var Controllers = function() {
 
     this.execute = function($scope, $routeParams, projectSvc) {
       //populate dashboard entities in $scope
-      $scope.tasks = taskSvc.getTasks();
+      $scope.tasks = projectSvc.getAllTasks();
     }
 
   };
@@ -174,10 +174,32 @@ var Controllers = function() {
   **/
   var JobController = function() {
 
-    this.execute = function($scope, $routeParams, projectSvc) {
+    this.execute = function($scope, $routeParams, $uibModal, projectSvc) {
       //populate dashboard entities in $scope
-      $scope.jobs = projectSvc.getJobs();
-    }
+      $scope.jobs = projectSvc.getAllJobs();
+       
+    	$scope.openTaskDetails = function(j) {
+        var modalInstance = $uibModal.open({
+          animation: true,
+          templateUrl: 'myModalContent.html',
+          controller: 'TaskDetailsModalCtrl',
+          resolve: {
+            task: function () {
+              return j.getTask();
+            }
+          }
+        });
+    	};
+    };
+
+    this.taskDetailsController = function($scope, $uibModalInstance, task) {
+      $scope.t = task;
+
+      $scope.ok = function () {
+        $uibModalInstance.close();
+      };
+    };
+
   };
 
   this.projectController = new ProjectController();

@@ -2,7 +2,8 @@
 
 STEPS:
 1. npm install
-2. npm start
+2. Create "collections" folder inside ooa-pcp
+3. npm start
 
 If failing: install npm modules bower adn http-server separately.
 
@@ -34,3 +35,4 @@ TODO:
 
 @TODO: project.create
 @TODO validate job def
+@TODO: add pagination

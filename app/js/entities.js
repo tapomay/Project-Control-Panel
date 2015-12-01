@@ -6,6 +6,7 @@
 // var app = angular.module('pcpBlueApp',[]);
 
 var Enum = require('enum');
+var uuid = require('node-uuid');
 // var exports = module.exports = {};
 
 var ResourceType = new Enum([ 'LABOR', 'EQUIPMENT', 'MATERIAL' ]);
@@ -16,7 +17,7 @@ var Resource = function(projectId, name, cost, resourceType) {
 	Resource.create = function(obj) {
 		var type = ResourceType.get(obj.resourceType);
 		var ret = new Resource(obj.projectId, obj.name, obj.cost, type);
-		ret._id = obj._id;
+		ret.entityId = obj.entityId;
 		return ret;
 	};
 
@@ -24,13 +25,14 @@ var Resource = function(projectId, name, cost, resourceType) {
 	this.name = name;
 	this.cost = cost;
 	this.resourceType = resourceType;
+	this.entityId = uuid.v4();
 	
 	if (isNaN(this.cost)) {
 		throw "Invalid cost: " + String(this.cost);
 	}
 
 	if (!(this.resourceType in ResourceType)) {
-		throw "Invalid resourceType: " + String(this.resourceType);
+		throw "Invalid resource type: " + String(this.resourceType);
 	}
 
 	this.getName = function() {
@@ -45,6 +47,10 @@ var Resource = function(projectId, name, cost, resourceType) {
 		return this.resourceType;
 	};
 
+	this.getEntityId = function() {
+		return this.entityId;
+	};
+
 };
 // exports.Resource = Resource;
 
@@ -54,7 +60,7 @@ var Task = function(projectId, name, description, durationDays, laborRequired,
 	Task.create = function(obj) {
 		var ret = new Task(obj.projectId, obj.name, obj.description, obj.durationDays, obj.laborRequired,
 		obj.equipmentRequired, obj.materialRequired, obj.deliverables);
-		ret._id = obj._id;
+		ret.entityId = obj.entityId;
 		return ret;
 	};
 
@@ -65,13 +71,14 @@ var Task = function(projectId, name, description, durationDays, laborRequired,
 	this.laborRequired = laborRequired;
 	this.equipmentRequired = equipmentRequired;
 	this.materialRequired = materialRequired;
-	// this.deliverables = deliverables; //TODO:
+	this.deliverables = deliverables; //TODO:
+	this.entityId = uuid.v4();
 
 	var _attribs = {
-		'duration' : _durationDays,
-		'laborRequired' : _laborRequired,
-		'equipmentRequired' : _equipmentRequired,
-		'materialRequired' : _materialRequired
+		'duration' : this.durationDays,
+		'laborRequired' : this.laborRequired,
+		'equipmentRequired' : this.equipmentRequired,
+		'materialRequired' : this.materialRequired
 	};
 
 	for ( var key in _attribs) {
@@ -108,6 +115,10 @@ var Task = function(projectId, name, description, durationDays, laborRequired,
 	this.getEquipmentRequired = function() {
 		return this.equipmentRequired;
 	};
+
+	this.getEntityId = function() {
+		return this.entityId;
+	};
 };
 // exports.Task = Task;
 
@@ -117,8 +128,9 @@ var JobStates = new Enum([ 'READY', 'RUNNING', 'COMPLETE' ]);
 var Job = function(projectId, name, task, startTime, percentComplete, state) {
 
 	Job.create = function(obj) {
-		var ret = new Job(obj.projectId, obj.name, obj.task, obj.startTime, obj.percentComplete, obj.state);
-		ret._id = obj._id;
+		var d = new Date(obj.startTime);
+		var ret = new Job(obj.projectId, obj.name, obj.task, d, obj.percentComplete, obj.state);
+		ret.entityId = obj.entityId;
 		return ret;
 	};
 	this.projectId = projectId;
@@ -127,21 +139,27 @@ var Job = function(projectId, name, task, startTime, percentComplete, state) {
 	this.startTime = startTime;
 	this.percentComplete = percentComplete;
 	this.state = state;
+	this.entityId = uuid.v4();
+	var _taskObj = null;
 
-	if (!(this.task instanceof Task)) {
-		throw "Task Invalid: Must be a Task() - " + Object.keys(this.task);
-	}
 
 	if (!(this.startTime instanceof Date)) {
 		throw "StartTime Invalid: Must be a Date() - " + Object.keys(this.startTime);
-	}
+	}    
+
+	this.getTask = function(){
+		return _taskObj;
+	};
+
+	this.setTask = function(t){
+		if(!(t instanceof Task)){
+			throw "Invalid task: " + t;
+		}
+		_taskObj = t;
+	};
 
 	this.getName = function() {
 		return this.name;
-	};
-
-	this.getTask = function() {
-		return this.task;
 	};
 
 	this.getStartTime = function() {
@@ -162,6 +180,11 @@ var Job = function(projectId, name, task, startTime, percentComplete, state) {
 		}
 		this.state = newState;
 	};
+
+	this.getEntityId = function() {
+		return this.entityId;
+	};
+
 };
 // exports.Job = Job;
 
