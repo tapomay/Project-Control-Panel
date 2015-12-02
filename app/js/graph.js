@@ -1,14 +1,16 @@
 
 // set up SVG for D3
-var width  = 1775,
-    height = 900,
+var width  = 960,
+    height = 500,
     colors = d3.scale.category10();
 
-var svg = d3.select('body')
-  .append('svg')
-  .attr('oncontextmenu', 'return false;')
-  .attr('width', width)
-  .attr('height', height);
+// var svg = d3.select('body')
+//   .append('svg')
+//   .attr('oncontextmenu', 'return false;')
+//   .attr('width', width)
+//   .attr('height', height);
+
+var svg = d3.select('svg');
 
 // set up initial nodes and links
 //  - nodes are known by 'id', not by index in array.
@@ -17,9 +19,9 @@ var svg = d3.select('body')
 
 
 var nodes = [
-    {id: 'job1', reflexive: false},
-    {id: 'job2', reflexive: false },
-    {id: 'job3', reflexive: false}
+    // {id: 'job1', reflexive: false},
+    // {id: 'job2', reflexive: false },
+    // {id: 'job3', reflexive: false}
   ];
 
   /*var nodes[];
@@ -29,10 +31,10 @@ var nodes = [
     alert(jobName);
     nodes.push(jobName);
   }*/
-  var lastNodeId = 2,
+  var lastNodeId = 0,
   links = [
-    {source: nodes[0], target: nodes[1], left: false, right: true },
-    {source: nodes[1], target: nodes[2], left: false, right: true }
+    // {source: nodes[0], target: nodes[1], left: false, right: true },
+    // {source: nodes[1], target: nodes[2], left: false, right: true }
   ];
 
 // init D3 force layout

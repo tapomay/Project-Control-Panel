@@ -27,6 +27,7 @@ pcpBlueControllers.controller('ModalEditInstanceCtrl', ['$scope', '$routeParams'
 pcpBlueControllers.controller('TaskCtrl', ['$scope', '$routeParams', 'ProjectDataSvc', controllers.taskController.execute]);
 pcpBlueControllers.controller('JobCtrl', ['$scope', '$routeParams', '$uibModal', 'ProjectDataSvc', controllers.jobController.execute]);
 pcpBlueControllers.controller('TaskDetailsModalCtrl', controllers.jobController.taskDetailsController);
+pcpBlueControllers.controller('GraphCtrl', ['$scope', '$routeParams', '$uibModal', 'ProjectDataSvc', controllers.jobController.graphController]);
 
 pcpBlueApp.config(['$routeProvider',
   function($routeProvider) {
@@ -46,6 +47,10 @@ pcpBlueApp.config(['$routeProvider',
       when('/jobs', {
         templateUrl: 'partials/jobslist.html',
         controller: 'JobCtrl'
+      }).
+      when('/graph', {
+        templateUrl: 'partials/graph.html',
+        controller: 'GraphCtrl'
       }).
       otherwise({
         redirectTo: '/dashboard'

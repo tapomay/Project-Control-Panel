@@ -200,6 +200,10 @@ var Controllers = function() {
       };
     };
 
+    this.graphController = function($scope, $routeParams, $uibModal, projectSvc) {
+      $scope.jobs = projectSvc.getAllJobs();
+    };
+
   };
 
   this.projectController = new ProjectController();
