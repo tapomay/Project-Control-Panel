@@ -153,16 +153,6 @@ function restart() {
   // update existing nodes (reflexive & selected visual states)
   //    on select event
   circle.selectAll('circle')
-    .classed("selected", function(d){
-        if(d === selected_node) 
-          {
-            alert(d.id); 
-            selected_node = null;
-            selected_link = null;
-            mousedown_link = null;
-            mousedown_node = null;
-            mouseup_node = null;
-          }})
     .style('fill', function(d) { return (d === selected_node) ? d3.rgb(colors(d.id)).brighter().toString() : colors(d.id); })
     .classed('reflexive', function(d) { return d.reflexive; });
 
