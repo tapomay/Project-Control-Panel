@@ -206,6 +206,52 @@ var Controllers = function() {
 
   };
 
+var GanttController= function(){
+	this.execute=function($scope,$routeParams,projectSvc){
+		$scope.jobs = projectSvc.getAllJobs();
+		var jobs=$scope.jobs;
+		
+		g = new JSGantt.GanttChart('g',document.getElementById('GanttChartDIV'), 'day');
+		
+		g.setShowRes(1); // Show/Hide Responsible (0/1)
+		g.setShowDur(1); // Show/Hide Duration (0/1)
+		g.setShowComp(0); // Show/Hide % Complete(0/1)
+		g.setCaptionType('Resource');  // Set to Show Caption
+		//g.setDateInputFormat('mm/dd/yyyy');
+		//g.setDateDisplayFormat('MM/DD/YYYY')
+
+		if(g){
+
+		for(var i=0; i<jobs.length; i++) {
+			var job = jobs[i];
+			//console.log(task.endDate.format("MM/DD/YYYY"));
+			var endTime = moment(job.startTime).add(job.getTask().durationDays,'days').toDate();
+			g.AddTaskItem(
+				new JSGantt.TaskItem(
+					job.id,   
+					job.name,
+					new moment(job.startTime).format("MM/DD/YYYY"),
+					new moment(endTime).format("MM/DD/YYYY"),
+					'ff00ff', 
+					'', 
+					0,
+					'Harika',
+					0, 
+					0, 
+					'', 
+					0,
+					job.dependsOn
+					));
+		}		
+			g.Draw();	
+			g.DrawDependencies();
+
+		}else {
+			console.log("problem in drawing");
+		}
+	};
+};
+
   this.projectController = new ProjectController();
   this.resourceController = new ResourceController();
   this.modalInstanceController = new ModalInstanceCtrl();
@@ -213,6 +259,7 @@ var Controllers = function() {
 
   this.taskController = new TaskController();
   this.jobController = new JobController();
+  this.ganttController=new GanttController();
 
 };
 
@@ -221,3 +268,4 @@ Controllers._INSTANCE = new Controllers();
 Controllers.init = function() {
   return Controllers._INSTANCE; 
 };
+var g; //global for gantt
