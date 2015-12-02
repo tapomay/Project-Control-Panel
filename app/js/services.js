@@ -31,19 +31,23 @@ var ProjectService = function() {
 	return _project.name;
 	}
 
-	var dummyData = function() {
-		     
-		var r1 = new Resource('DEMO_PROJECT_1', 'res1', 10, ResourceType.LABOR);		
-		var r2 = new Resource('DEMO_PROJECT_1', 'res2', 20, ResourceType.LABOR);
+    var dummyData = function() {
+        var projectId = 'DEMO_PROJECT_1'
+        var r1 = new Resource(projectId, 'res1', 10, ResourceType.LABOR);
+        var r2 = new Resource(projectId, 'res2', 20, ResourceType.LABOR);
 
-		// var t1 = new Task();
+        var t1 = new Task(projectId, 'task1', 'task1 desc', 3, 2,
+        0, 0, null);
 
-		// var j1 = new Job();
+        var t2 = new Task(projectId, 'task2', 'task2 desc', 1, 0,
+        1, 1, null);
 
-		var p = new Project('DEMO_PROJECT_1', [r1,r2], [], [])
-		db.projects.save(p);
-	};
+        var j1 = new Job(projectId, 'job1', t1.getEntityId(), new Date('11-20-2015'), 0, JobStates.READY);
+        var j2 = new Job(projectId, 'job2', t2.getEntityId(), new Date('11-23-2015'), 0, JobStates.READY);
 
+        var p = new Project('DEMO_PROJECT_1', [r1,r2], [t1, t2], [j1, j2]);
+        db.projects.save(p);
+    };
 	this.getAllResources = function() {
 		      
 		return _project.getAllResources();
@@ -75,8 +79,6 @@ var ProjectService = function() {
 		_project.deleteResource(r);
 	};
 
-	
-	
 	dummyData();
 };
 

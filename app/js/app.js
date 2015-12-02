@@ -25,7 +25,8 @@ pcpBlueControllers.controller('ResourceCtrl', ['$scope', '$routeParams', '$uibMo
 pcpBlueControllers.controller('ModalInstanceCtrl', ['$scope', '$routeParams', '$uibModalInstance', 'ProjectDataSvc', controllers.modalInstanceController.execute]);
 pcpBlueControllers.controller('ModalEditInstanceCtrl', ['$scope', '$routeParams', '$uibModalInstance', 'ProjectDataSvc', 'name_passed', 'cost_passed', 'type_passed', controllers.modalEditInstanceController.execute]);
 pcpBlueControllers.controller('TaskCtrl', ['$scope', '$routeParams', 'ProjectDataSvc', controllers.taskController.execute]);
-pcpBlueControllers.controller('JobCtrl', ['$scope', '$routeParams', 'ProjectDataSvc', controllers.jobController.execute]);
+pcpBlueControllers.controller('JobCtrl', ['$scope', '$routeParams', '$uibModal', 'ProjectDataSvc', controllers.jobController.execute]);
+pcpBlueControllers.controller('TaskDetailsModalCtrl', controllers.jobController.taskDetailsController);
 
 pcpBlueApp.config(['$routeProvider',
   function($routeProvider) {
@@ -38,12 +39,12 @@ pcpBlueApp.config(['$routeProvider',
         templateUrl: 'partials/resources.html',
         controller: 'ResourceCtrl'
       }).
-      when('tasks', {
-        templateUrl: 'partials/tasks.html',
+      when('/tasks', {
+        templateUrl: 'partials/tasklist.html',
         controller: 'TaskCtrl'
       }).
-      when('jobs', {
-        templateUrl: 'partials/jobs.html',
+      when('/jobs', {
+        templateUrl: 'partials/jobslist.html',
         controller: 'JobCtrl'
       }).
       otherwise({

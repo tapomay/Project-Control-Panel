@@ -1,0 +1,52 @@
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-md-10">
+      <!--Sidebar content-->
+
+      Search: <input ng-model="query">
+
+    </div>
+  </div>
+
+  <div class="row">
+    <!-- <div class="col-md-10"> -->
+      <!--Body content-->
+
+
+      <uib-accordion closeOthers="true">
+        
+        <uib-accordion-group heading="{{t.name}}" ng-repeat="t in tasks | filter:query">
+            
+            <div class="row">
+              <div class="col-md-4">Task name:</div>
+              <div class="col-md-8">{{t.name}}</div>
+            </div>
+            <div class="row">
+              <div class="col-md-4">Description:</div>
+              <div class="col-md-8">{{t.description}}</div>
+            </div>
+            <div class="row">
+               <div class="col-md-4">Duration:</div>
+                <div class="col-md-8">{{t.durationDays}} days</div>
+            </div>
+            <div class="row">
+              <div class="col-md-4">Labor required:</div>
+              <div class="col-md-8">{{t.laborRequired}}</div>
+            </div>
+            <div class="row">
+              <div class="col-md-4">Equipment required:</div>
+              <div class="col-md-8">{{t.equipmentRequired}}</div>
+            </div>
+            <div class="row">
+              <div class="col-md-4">Material required:</div>
+              <div class="col-md-8">{{t.materialRequired}}</div>
+            </div>
+
+        </uib-accordion-group>
+
+      </uib-accordion>
+
+    <!-- </div> -->
+  </div>
+  
+</div>
