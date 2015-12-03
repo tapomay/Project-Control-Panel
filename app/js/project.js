@@ -88,7 +88,9 @@ var Project = function(name, resources, tasks, jobs) {
     }
 
 	this.addJob = function(job) {
-		if(job.task in _tasksMap) {
+//		if(job.task in _tasksMap) {
+		if(1) {
+			
 			this.jobs.push(job);
 			_jobsMap[job.entityId] = job;
 		}

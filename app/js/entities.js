@@ -142,10 +142,11 @@ var Job = function(projectId, name, task, startTime, percentComplete, state) {
 	this.entityId = uuid.v4();
 	var _taskObj = null;
 
-
+/*
 	if (!(this.startTime instanceof Date)) {
 		throw "StartTime Invalid: Must be a Date() - " + Object.keys(this.startTime);
 	}    
+*/
 
 	this.getTask = function(){
 		return _taskObj;

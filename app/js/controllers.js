@@ -162,10 +162,11 @@ var Controllers = function() {
   **/
   var TaskController = function() {
 
-    this.execute = function($scope, $routeParams, projectSvc) {
+    this.execute = function($scope, $routeParams, projectSvc) 
+    {
       //populate dashboard entities in $scope
       $scope.tasks = projectSvc.getAllTasks();
-    }
+    };
 
   };
 
@@ -177,7 +178,18 @@ var Controllers = function() {
     this.execute = function($scope, $routeParams, $uibModal, projectSvc) {
       //populate dashboard entities in $scope
       $scope.jobs = projectSvc.getAllJobs();
-       
+
+	 $scope.open1 = function(){
+			var modalInstance = $uibModal.open({
+			templateUrl: 'partials/addJobModalContent.html',
+			controller: 'ModalAddJobInstanceCtrl',
+		});
+	   modalInstance.result.then(function () {
+    }, function () {
+      window.console.info('Add Job Modal dismissed at: ' + new Date());
+    });
+	};
+	
     	$scope.openTaskDetails = function(j) {
         var modalInstance = $uibModal.open({
           animation: true,
@@ -266,10 +278,43 @@ var GanttController= function(){
 	};
 };
 
+
+var ModalAddJobInstanceCtrl = function($scope, $uibModalInstance) {
+	  this.execute = function($scope, $routeParams, $uibModalInstance, projectSvc) {
+
+	  $scope.ok = function () {
+
+		// Setup the new data to be inserted
+			$scope.newJob = {};
+			$scope.newJob.name = $scope.j_name;
+			$scope.newJob.description = $scope.j_description;
+			$scope.newJob.myTime = $scope.dt;
+			window.console.log('Date is: ' + $scope.dt);			
+			//$scope.newJob.startTime = $scope.j_startTime;	
+			//$scope.newJob.task = $scope.j_task;	
+			
+			$scope.newJob.projectId = projectSvc.getProjectId();
+			
+			projectSvc.addJob($scope.newJob);
+			
+			$uibModalInstance.close();  
+					
+	//    $uibModalInstance.close({rname1: $scope.r_name, rcost1: $scope.r_cost, rtype1: $scope.data.singleSelect, resources1: $scope.resources});  
+	  };
+
+	  $scope.cancel = function () {
+		$uibModalInstance.dismiss('cancel','');
+	  };
+
+	  };  
+	};   
+
+
   this.projectController = new ProjectController();
   this.resourceController = new ResourceController();
   this.modalInstanceController = new ModalInstanceCtrl();
   this.modalEditInstanceController = new ModalEditInstanceCtrl();
+  this.modalAddJobInstanceController = new ModalAddJobInstanceCtrl();
 
   this.taskController = new TaskController();
   this.jobController = new JobController();

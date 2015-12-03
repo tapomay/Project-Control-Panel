@@ -71,6 +71,12 @@ var ProjectService = function() {
 		var r = new Resource(resObj.projectId, resObj.name, resObj.cost, resObj.type);
 		_project.addResource(r);
 	};
+	this.addTask = function(taskObj) {
+		var type = ResourceType.get(taskObj.type);
+			
+		var t = new Task(taskObj.projectId, taskObj.name, taskObj.description, taskObj.durationDays);
+		_project.addTask(t);
+	};
 
 	this.deleteResource = function(resObj) {
 		var type = ResourceType.get(resObj.type);
@@ -79,6 +85,12 @@ var ProjectService = function() {
 		_project.deleteResource(r);
 	};
 
+	this.addJob = function(jobObj) {
+		window.console.log('service - addJob');	
+		var j1 = new Job(jobObj.projectId, jobObj.name, 'task1', jobObj.myTime, '50', 'RUNNING');
+		_project.addJob(j1);
+	};
+	
 	dummyData();
 };
 
