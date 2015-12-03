@@ -41,10 +41,20 @@
               <div class="col-md-4">Material required:</div>
               <div class="col-md-8">{{t.materialRequired}}</div>
             </div>
+            <div class="row">
+              <button type="button" class="btn btn-default" ng-click="deleteTask(resource)">Delete</button>
+              <button type="button" class="btn btn-default" ng-click="editTask(resource)">Edit</button>
+            </div>
 
         </uib-accordion-group>
 
       </uib-accordion>
+
+      <div class="col-md-10">
+      <!--Body content-->
+
+        <button type="button" class="btn btn-default" ng-click="open2($scope.uibModal)">Add Task</button>
+    </div>
 
     <!-- </div> -->
   </div>

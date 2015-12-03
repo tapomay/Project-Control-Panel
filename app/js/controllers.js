@@ -160,15 +160,67 @@ var Controllers = function() {
   /**
     Controller for /tasks
   **/
-  var TaskController = function() {
+  var TaskController = function()
+   {
 
-    this.execute = function($scope, $routeParams, projectSvc) 
-    {
+    this.execute = function($scope, $routeParams, $uibModal, projectSvc) {
       //populate dashboard entities in $scope
       $scope.tasks = projectSvc.getAllTasks();
+
+      $scope.open2 = function()
+      {
+      
+      var modalInstance = $uibModal.open({
+      templateUrl:'partials/myTaskModalContent.html',
+      controller: 'TaskModalInstanceCtrl',
+    });
+     modalInstance.result.then(function () {
+      
+    }, function () {
+      window.console.info('Modal dismissed at: ' + new Date());
+    });
+    };
     };
 
   };
+
+
+var TaskModalInstanceCtrl = function($scope, $uibModalInstance) {
+  this.execute = function($scope, $routeParams, $uibModalInstance, projectSvc) {
+
+  $scope.ok = function () {
+
+  // Setup the new data to be inserted
+    $scope.newTask = {};
+    $scope.newTask.name = $scope.t_name;
+    $scope.newTask.description = $scope.t_desc;
+    $scope.newTask.durationDays = $scope.t_duration;
+//    $scope.newTask.type = $scope.data_singleSelect; 
+    //$scope.newResource.id = projectSvc.getProjectId();
+    
+    projectSvc.addTask($scope.newTask);
+    
+    $uibModalInstance.close();  
+        
+
+  };
+
+  $scope.cancel = function () 
+  {
+    $uibModalInstance.dismiss('cancel','');
+  };
+
+  };  
+}; 
+
+
+
+
+
+
+
+
+
 
   /**
     Controller for /jobs
@@ -358,6 +410,7 @@ var ModalAddJobInstanceCtrl = function($scope, $uibModalInstance) {
   this.modalAddJobInstanceController = new ModalAddJobInstanceCtrl();
 
   this.taskController = new TaskController();
+  this.taskmodalInstanceController = new TaskModalInstanceCtrl();
   this.jobController = new JobController();
   this.ganttController=new GanttController();
 this.jobScheduleController=new JobScheduleController();

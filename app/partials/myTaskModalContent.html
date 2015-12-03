@@ -1,0 +1,25 @@
+      <div class="modal-header">
+        <h3 class="modal-title">Tasks</h3>
+      </div>
+
+    <div class="modal-body">
+      <p>Name : 
+        <input type="text" ng-model="t_name" placeholder="Task Name"></p> <br>
+        <p>Description : <input type="text" ng-model="t_desc" placeholder="Task Description"></p> <br>
+		
+      <p>Duration : <input type="text" ng-model="t_duration" placeholder="Duration"></p> <br>
+
+		Resources : 
+		<select name="singleSelect" ng-model="data_singleSelect">
+			  <option value="">-Select Resource-</option>		
+			  <option value="LABOR">Labor</option>
+			  <option value="EQUIPMENT">Equipment</option>
+			  <option value="MATERIAL">Material</option>			  			  
+			</select>
+		</p> <br>
+    </div>
+
+      <div class="modal-footer">
+        <button class="btn btn-primary" type="button" ng-click="ok()">OK</button>
+        <button class="btn btn-warning" type="button" ng-click="cancel()">Cancel</button>
+      </div>

@@ -72,9 +72,9 @@ var ProjectService = function() {
 		_project.addResource(r);
 	};
 	this.addTask = function(taskObj) {
-		var type = ResourceType.get(taskObj.type);
+		//var type = ResourceType.get(taskObj.type);
 			
-		var t = new Task(taskObj.projectId, taskObj.name, taskObj.description, taskObj.durationDays);
+		var t = new Task(taskObj.projectId, taskObj.name, taskObj.description, taskObj.durationDays,0,0,0,0);
 		_project.addTask(t);
 	};
 
