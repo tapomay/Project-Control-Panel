@@ -189,4 +189,7 @@ var Job = function(projectId, name, task, startTime, percentComplete, state) {
 };
 // exports.Job = Job;
 
-// })();
+var Flow = function(fromJob, toJob) {
+	this.fromJob = fromJob;
+	this.toJob = toJob;
+};

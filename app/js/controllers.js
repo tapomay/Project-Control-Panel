@@ -217,20 +217,27 @@ var Controllers = function() {
       $scope.flows = [];//projectSvc.getAllJobs();
 
       $scope.openJobEdit = function(j) {
-        var modalInstance = $uibModal.open({
-           animation: true,
-           templateUrl: 'myModalContent.html',
-           controller: 'TaskDetailsModalCtrl',
-           resolve: {
-             task: function () {
-               return j.getTask();
+        if(j){
+          //EDIT JOB
+          var modalInstance = $uibModal.open({
+             animation: true,
+             templateUrl: 'myModalContent.html',
+             controller: 'TaskDetailsModalCtrl',
+             resolve: {
+               task: function () {
+                 return j.getTask();
+               }
              }
-           }
-         });
-       };
+           });
+       }
+       else {
+          //NEW JOB
+
+       }
     };
 
   };
+};
 
 var GanttController= function(){
 	this.execute=function($scope,$routeParams,projectSvc){
