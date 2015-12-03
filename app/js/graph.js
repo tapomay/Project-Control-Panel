@@ -4,7 +4,7 @@ var width  = 960,
     colors = d3.scale.category10();
 
 var svg = d3.select('svg');
-  
+var newNodeFlag = true;
 
 // set up initial nodes and links
 //  - nodes are known by 'id', not by index in array.
@@ -172,12 +172,12 @@ function restart() {
         .style('marker-end', 'url(#end-arrow)')
         .classed('hidden', false)
         .attr('d', 'M' + mousedown_node.x + ',' + mousedown_node.y + 'L' + mousedown_node.x + ',' + mousedown_node.y);
-
+      newNodeFlag = false;
       restart();
     })
     .on('mouseup', function(d) {
       if(!mousedown_node) return;
-
+      
       // needed by FF
       drag_line
         .classed('hidden', true)
@@ -251,7 +251,7 @@ function mousedown() {
   node.x = point[0];
   node.y = point[1];
   nodes.push(node);
-
+  newNodeFlag = true;
   restart();
 }
 
@@ -265,6 +265,9 @@ function mousemove() {
 }
 
 function mouseup() {
+  if(selected_node && !newNodeFlag)
+    alert(selected_node.id);
+  newNodeFlag = false;
   if(mousedown_node) {
     // hide drag line
     drag_line
