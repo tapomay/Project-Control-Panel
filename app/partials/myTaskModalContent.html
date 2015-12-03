@@ -7,16 +7,13 @@
         <input type="text" ng-model="t_name" placeholder="Task Name"></p> <br>
         <p>Description : <input type="text" ng-model="t_desc" placeholder="Task Description"></p> <br>
 		
-      <p>Duration : <input type="text" ng-model="t_duration" placeholder="Duration"></p> <br>
-
-		Resources : 
-		<select name="singleSelect" ng-model="data_singleSelect">
-			  <option value="">-Select Resource-</option>		
-			  <option value="LABOR">Labor</option>
-			  <option value="EQUIPMENT">Equipment</option>
-			  <option value="MATERIAL">Material</option>			  			  
-			</select>
-		</p> <br>
+      <p>Duration : <input type="text" ng-model="t_duration" placeholder="Duration"></p> <br>	
+			
+		<label for="multipleSelect"> Resource required: </label><br>
+		<select name="multipleSelect" id="multipleSelect" ng-model="data1_multipleSelect" multiple>
+			<option ng-repeat="item in resources" value="{{item.name}}">{{item.name}}</option>
+		</select><br>
+		
     </div>
 
       <div class="modal-footer">

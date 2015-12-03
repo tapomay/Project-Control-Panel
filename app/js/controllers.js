@@ -166,7 +166,7 @@ var Controllers = function() {
     this.execute = function($scope, $routeParams, $uibModal, projectSvc) {
       //populate dashboard entities in $scope
       $scope.tasks = projectSvc.getAllTasks();
-
+	  $scope.resources = projectSvc.getAllResources();
       $scope.open2 = function()
       {
       
@@ -187,6 +187,8 @@ var Controllers = function() {
 
 var TaskModalInstanceCtrl = function($scope, $uibModalInstance) {
   this.execute = function($scope, $routeParams, $uibModalInstance, projectSvc) {
+  	  $scope.resources = projectSvc.getAllResources();
+	  
 
   $scope.ok = function () {
 
@@ -195,7 +197,8 @@ var TaskModalInstanceCtrl = function($scope, $uibModalInstance) {
     $scope.newTask.name = $scope.t_name;
     $scope.newTask.description = $scope.t_desc;
     $scope.newTask.durationDays = $scope.t_duration;
-//    $scope.newTask.type = $scope.data_singleSelect; 
+	//window.console.log($scope.data1_multipleSelect[0]);
+    $scope.newTask.resourceList = $scope.data1_multipleSelect; 
     //$scope.newResource.id = projectSvc.getProjectId();
     
     projectSvc.addTask($scope.newTask);

@@ -55,11 +55,11 @@ var Resource = function(projectId, name, cost, resourceType) {
 // exports.Resource = Resource;
 
 var Task = function(projectId, name, description, durationDays, laborRequired,
-		equipmentRequired, materialRequired, deliverables) {
+		equipmentRequired, materialRequired, deliverables, resourceList) {
 
 	Task.create = function(obj) {
 		var ret = new Task(obj.projectId, obj.name, obj.description, obj.durationDays, obj.laborRequired,
-		obj.equipmentRequired, obj.materialRequired, obj.deliverables);
+		obj.equipmentRequired, obj.materialRequired, obj.deliverables, obj.resourceList);
 		ret.entityId = obj.entityId;
 		return ret;
 	};
@@ -72,6 +72,7 @@ var Task = function(projectId, name, description, durationDays, laborRequired,
 	this.equipmentRequired = equipmentRequired;
 	this.materialRequired = materialRequired;
 	this.deliverables = deliverables; //TODO:
+	this.resourceList = resourceList;
 	this.entityId = uuid.v4();
 
 	var _attribs = {
