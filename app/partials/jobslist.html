@@ -1,12 +1,5 @@
 <div class="container-fluid">
-  <div class="row">
-    <div class="col-md-10">
-      <!--Sidebar content-->
-
-      Search: <input ng-model="query">
-
-    </div>
-  </div>
+  
   <script type="text/ng-template" id="myModalContent.html">
     <div class="modal-header">
         <h3 class="modal-title">Task Details</h3>
@@ -74,7 +67,7 @@
             </div>
             <div class="row">
               <div class="col-md-4">Task:</div>
-              <div class="col-md-8"><button type="button" class="btn btn-default" ng-click="openTaskDetails(j)">{{j.getTask().name}}</button></div>
+              <div class="col-md-8"><button type="button" class="btn btn-primary" ng-click="openTaskDetails(j)">{{j.getTask().name}}</button></div>
             </div>
 
         </uib-accordion-group>
@@ -92,5 +85,5 @@
     </li>
     </ul>
   </div>
-  <button type="button" class="btn btn-default" ng-click="openEditJob()">Add Job</button>  
+  <center><button type="button" class="btn btn-primary" ng-click="openEditJob()">Add Job</button>  </center>
 </div>

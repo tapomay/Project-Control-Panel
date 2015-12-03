@@ -15,9 +15,10 @@ Array.prototype.toMap = function(){
   return ret;
 }
 
-var Project = function(name, resources, tasks, jobs, flows) {
+var Project = function(name, startDate, resources, tasks, jobs, flows) {
 
 	this.name = name;
+	this.startDate = startDate;
 	this.tasks = tasks;//array expected
 	this.jobs = jobs;//array expected
 	this.resources = resources;//array expected
@@ -27,7 +28,7 @@ var Project = function(name, resources, tasks, jobs, flows) {
 	var _resourcesMap = resources.toMap();
 	var _jobsMap = jobs.toMap();
 
-	Project.create = function(obj) {
+	Project.load = function(obj) {
 		var res = [];
 		for(var i=0; i<obj.resources.length; i++) {
 			var r = obj.resources[i];
@@ -53,8 +54,8 @@ var Project = function(name, resources, tasks, jobs, flows) {
 			var fmod = new Flow(f.fromJob, f.toJob);
 			flows.push(fmod);
 		}
-
-		var ret = new Project(obj.name, res, tasks, jobs, flows);
+		var date = new Date(obj.startDate);
+		var ret = new Project(obj.name, date, res, tasks, jobs, flows);
 
 		for(var i=0; i<jobs.length; i++) {
 			var j = jobs[i];
@@ -154,5 +155,11 @@ var Project = function(name, resources, tasks, jobs, flows) {
         f1.setToJob(toJob);
         this.flows.push(f1);
 	};
-
+ 	this.deleteJob = function(job) {
+        var i = this.jobs.indexOf(job);
+        if(i !=-1) {
+                this.jobs.splice(i,1);
+ 
+        }
+	};
 };

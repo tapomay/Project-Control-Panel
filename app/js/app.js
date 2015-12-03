@@ -26,18 +26,19 @@ pcpBlueControllers.controller('ModalInstanceCtrl', ['$scope', '$routeParams', '$
 pcpBlueControllers.controller('ModalEditInstanceCtrl', ['$scope', '$routeParams', '$uibModalInstance', 'ProjectDataSvc', 'name_passed', 'cost_passed', 'type_passed', controllers.modalEditInstanceController.execute]);
 pcpBlueControllers.controller('TaskCtrl', ['$scope', '$routeParams','$uibModal','ProjectDataSvc', controllers.taskController.execute]);
 pcpBlueControllers.controller('JobCtrl', ['$scope', '$routeParams', '$uibModal', 'ProjectDataSvc', controllers.jobController.execute]);
-pcpBlueControllers.controller('ModalAddJobInstanceCtrl', ['$scope', '$routeParams', '$uibModalInstance', 'ProjectDataSvc', 'job', 'graphNode', 'links', controllers.modalAddJobInstanceController.execute]);
-pcpBlueControllers.controller('TaskModalInstanceCtrl', ['$scope', '$routeParams', '$uibModalInstance', 'ProjectDataSvc', controllers.taskmodalInstanceController.execute]);
+pcpBlueControllers.controller('ModalAddJobInstanceCtrl', ['$scope', '$routeParams', '$uibModal', '$uibModalInstance', 'ProjectDataSvc', 'job', 'graphNode', 'links', controllers.modalAddJobInstanceController.execute]);
+​pcpBlueControllers.controller('TaskModalInstanceCtrl', ['$scope', '$routeParams', '$uibModalInstance', 'ProjectDataSvc', controllers.taskmodalInstanceController.execute]);
 pcpBlueControllers.controller('TaskDetailsModalCtrl', controllers.jobController.taskDetailsController);
 pcpBlueControllers.controller('GraphCtrl', ['$scope', '$routeParams', '$uibModal', 'ProjectDataSvc', controllers.jobController.graphController]);
 pcpBlueControllers.controller('GanttViewCtrl',['$scope','$routeParams','ProjectDataSvc',controllers.ganttController.execute]);
 pcpBlueControllers.controller('JobScheduleCtrl',['$scope','$routeParams','ProjectDataSvc',controllers.jobScheduleController.execute]);
+pcpBlueControllers.controller('ChildJobsCtrl', controllers.childJobsCtrl);
 
 pcpBlueApp.config(['$routeProvider',
   function($routeProvider) {
     $routeProvider.
-      when('/dashboard', {
-        templateUrl: 'partials/dashboard.html',
+      when('/createNew', {
+        templateUrl: 'partials/createNewProjectModal.html',
         controller: 'ProjectCtrl'
       }).
       when('/resources', {
@@ -65,7 +66,7 @@ pcpBlueApp.config(['$routeProvider',
         controller: 'JobScheduleCtrl'
       }).
       otherwise({
-        redirectTo: '/dashboard'
+        templateUrl: 'partials/dashboard.html'
       });
   }]);
 

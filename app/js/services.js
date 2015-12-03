@@ -14,17 +14,41 @@ var ProjectService = function() {
 	this.loadProject = function(name) {
 		var projects = db.projects.find({'name':name});
 		if(projects.length == 0) {
-			_project = new Project(name, [], [], [], []);
+			var date = new Date();
+			_project = new Project(name, date, [], [], [], []);
 		} else {
 			var p = projects[0];
-			_project = Project.create(p);
+			_project = Project.load(p);
 		}
-		alert('Loaded:' + _project.name);
+		//alert('Loaded:' + _project.name);
 	};
 
 	this.saveProject = function(){
       
 	};
+
+	this.createNewProject = function(name, startDate) {
+		_project = new Project(name, startDate, [], [], [], []);
+	};
+
+	this.exportProject = function() {
+		var fileName = _project.name + ".xml";
+		var js2xmlparser = require("js2xmlparser");
+		var fs = require('fs');
+		var data = JSON.stringify(_project);
+		var jsonText = js2xmlparser("project",data);
+		
+		fs.writeFile(fileName, jsonText, function(err) {
+			if(err==null)
+			{
+				alert("The project is exported to " + fileName);
+			}
+			else
+			{
+				alert("Error in ecporting project");
+			}
+		}) ;
+	}
 
 	this.activeProject = function(){
       
@@ -47,8 +71,8 @@ var ProjectService = function() {
         var f1 = new Flow(j1.getEntityId(), j2.getEntityId());
         f1.setFromJob(j1);
         f1.setToJob(j2);
-
-        var p = new Project('DEMO_PROJECT_1', [r1,r2], [t1, t2], [j1, j2], [f1]);
+        var date = new Date();
+        var p = new Project('DEMO_PROJECT_1', date, [r1,r2], [t1, t2], [j1, j2], [f1]);
         db.projects.save(p);
     };
 
@@ -143,7 +167,17 @@ var ProjectService = function() {
 	this.getResourceById = function(entityId) {
 		return _project.getResourceById(entityId);
 	};
-
+	this.convertToComposite = function(job) {
+		var ret = new CompositeJob(job);
+        _project.deleteJob(job);
+        _project.addJob(ret);
+        return ret;
+    };
+ 
+    this.setChild = function(parent, child) {
+        window.console.log(parent);
+        window.console.log(child);
+	};
 	dummyData();
 };
 
