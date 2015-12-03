@@ -31,6 +31,7 @@ pcpBlueControllers.controller('ModalAddJobInstanceCtrl', ['$scope', '$routeParam
 pcpBlueControllers.controller('TaskDetailsModalCtrl', controllers.jobController.taskDetailsController);
 pcpBlueControllers.controller('GraphCtrl', ['$scope', '$routeParams', '$uibModal', 'ProjectDataSvc', controllers.jobController.graphController]);
 pcpBlueControllers.controller('GanttViewCtrl',['$scope','$routeParams','ProjectDataSvc',controllers.ganttController.execute]);
+pcpBlueControllers.controller('JobScheduleCtrl',['$scope','$routeParams','ProjectDataSvc',controllers.jobScheduleController.execute]);
 
 pcpBlueApp.config(['$routeProvider',
   function($routeProvider) {
@@ -58,6 +59,10 @@ pcpBlueApp.config(['$routeProvider',
       when('/ganttview', {
         templateUrl: 'partials/ganttview.html',
         controller: 'GanttViewCtrl'
+      }).
+       when('/jobschedule', {
+        templateUrl: 'partials/jobschedule.html',
+        controller: 'JobScheduleCtrl'
       }).
       otherwise({
         redirectTo: '/dashboard'

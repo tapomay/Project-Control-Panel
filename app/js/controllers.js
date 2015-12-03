@@ -284,7 +284,41 @@ var GanttController= function(){
 		}
 	};
 };
-
+var JobScheduleController=function(){
+       this.execute=function($scope,$routeParams,projectSvc){
+               var jobs=projectSvc.getAllJobs();
+               var agenda=[];
+               var jobSchedule=[],index;
+               $scope.schedule=jobSchedule;
+               for(var i=0; i<jobs.length; i++) {
+               val = jobs[i];
+               for(var j=0;j<val.getTask().durationDays;j++){
+                               var item={};
+                       item.day=new moment(val.startTime).add('days',j).toDate();
+                       item.jobName=val.name;
+                       agenda.push(item);
+               }
+               }
+               for (var i = 0; i < agenda.length;i++){
+               index = dayContains(agenda[i].day);
+                   if (index == -1){
+                       jobSchedule.push({day: agenda[i].day, jobName: agenda[i].jobName});
+                   } else {
+                       jobSchedule[index].jobName += ','+agenda[i].jobName;
+                   }
+               }
+        
+               function dayContains(key){
+                   for (var i=0; i < jobSchedule.length; i++){
+                      if (JSON.stringify(jobSchedule[i].day) == JSON.stringify(key)) {
+                           return i;
+                           break;
+                       }
+                   }
+                   return -1;
+               }
+     };
+ };
 
 var ModalAddJobInstanceCtrl = function($scope, $uibModalInstance) {
 	  this.execute = function($scope, $routeParams, $uibModalInstance, projectSvc) {
@@ -326,7 +360,7 @@ var ModalAddJobInstanceCtrl = function($scope, $uibModalInstance) {
   this.taskController = new TaskController();
   this.jobController = new JobController();
   this.ganttController=new GanttController();
-
+this.jobScheduleController=new JobScheduleController();
 };
 
 Controllers._INSTANCE = new Controllers();
