@@ -84,5 +84,14 @@
 
     <!-- </div> -->
   </div>
-	  <button type="button" class="btn btn-default" ng-click="open1($scope.uibModal)">Add Job</button>  
+
+  <div class="row">
+    <ul>
+    FLOWS:
+    <li ng-repeat="f in flows">
+      {{f.getFromJob().name}} => {{f.getToJob().name}}
+    </li>
+    </ul>
+  </div>
+  <button type="button" class="btn btn-default" ng-click="openEditJob()">Add Job</button>  
 </div>

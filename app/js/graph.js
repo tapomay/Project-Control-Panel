@@ -55,10 +55,19 @@ function initGraph(populatedAngularScope) {
   }
 
   var flows = populatedAngularScope.flows;
-  // window.console.log(flows);
+  window.console.log(flows);
+  window.console.log(GraphJobNode.entityidMap);
+
   for(var i = 0; i<flows.length; i++) {
     var f = flows[i];
+    var source = GraphJobNode.entityidMap[f.fromJob];
+    var target = GraphJobNode.entityidMap[f.toJob];
+    link = {source: source, target: target, left: false, right: false};
+    link['right'] = true;
+    links.push(link);
   }
+  window.console.log(links);
+
   restart();
 }
 
@@ -256,6 +265,7 @@ function restart() {
         link = {source: source, target: target, left: false, right: false};
         link[direction] = true;
         links.push(link);
+        ngScopeBlue.flowCreateHeartBeat(source.job, target.job);
       }
 
       // select new link
@@ -290,7 +300,8 @@ function mousedown() {
   // insert new node at point
   var nodeData = {prop1:"blah-" + (lastNodeId + 1)};
   var point = d3.mouse(this),
-      node = {id: ++lastNodeId, name: 'n' + (lastNodeId-1), reflexive: false, nodeData:nodeData};
+    node = new GraphJobNode(++lastNodeId, 'n' + (lastNodeId-1), false, null);
+      // node = {id: ++lastNodeId, name: 'n' + (lastNodeId-1), reflexive: false, nodeData:nodeData};
   node.x = point[0];
   node.y = point[1];
   nodes.push(node);
@@ -326,7 +337,7 @@ function mouseup() {
     }
     else {
       //@R2D2: ngScopeBlue extracted from angular in graph.html
-      ngScopeBlue.openJobEdit(selected_node.job);      
+      ngScopeBlue.openJobEdit(selected_node.job, selected_node, links);
     }
   }
   newNodeFlag = false;
@@ -358,7 +369,8 @@ function spliceLinksForNode(node) {
 var lastKeyDown = -1;
 
 function keydown() {
-  d3.event.preventDefault();
+  // @R2D2: prevent from suppressing key events while typing into job create modal
+  // d3.event.preventDefault();
 
   if(lastKeyDown !== -1) return;
   lastKeyDown = d3.event.keyCode;

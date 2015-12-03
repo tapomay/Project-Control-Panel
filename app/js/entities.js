@@ -54,12 +54,10 @@ var Resource = function(projectId, name, cost, resourceType) {
 };
 // exports.Resource = Resource;
 
-var Task = function(projectId, name, description, durationDays, laborRequired,
-		equipmentRequired, materialRequired, deliverables, resourceList) {
+var Task = function(projectId, name, description, durationDays, resourcesRequired, deliverables) {
 
-	Task.create = function(obj) {
-		var ret = new Task(obj.projectId, obj.name, obj.description, obj.durationDays, obj.laborRequired,
-		obj.equipmentRequired, obj.materialRequired, obj.deliverables, obj.resourceList);
+	Task.create = function(obj) {//pass resourceObj array too
+		var ret = new Task(obj.projectId, obj.name, obj.description, obj.durationDays, obj.resourcesRequired, obj.deliverables);
 		ret.entityId = obj.entityId;
 		return ret;
 	};
@@ -68,11 +66,12 @@ var Task = function(projectId, name, description, durationDays, laborRequired,
 	this.name = name;
 	this.description = description;
 	this.durationDays = durationDays;
-	this.laborRequired = laborRequired;
-	this.equipmentRequired = equipmentRequired;
-	this.materialRequired = materialRequired;
+
+	this.resourcesRequired = resourcesRequired;
+	this.laborRequired = -1;
+	this.equipmentRequired = -1;
+	this.materialRequired = -1;
 	this.deliverables = deliverables; //TODO:
-	this.resourceList = resourceList;
 	this.entityId = uuid.v4();
 
 	var _attribs = {
@@ -157,6 +156,7 @@ var Job = function(projectId, name, task, startTime, percentComplete, state) {
 		if(!(t instanceof Task)){
 			throw "Invalid task: " + t;
 		}
+		this.task = t.entityId;
 		_taskObj = t;
 	};
 
@@ -193,4 +193,21 @@ var Job = function(projectId, name, task, startTime, percentComplete, state) {
 var Flow = function(fromJob, toJob) {
 	this.fromJob = fromJob;
 	this.toJob = toJob;
+
+	var _fromJobObj, _toJobObj;
+
+	this.getFromJob = function() {
+		return _fromJobObj;
+	};
+	this.getToJob = function() {
+		return _toJobObj;
+	};
+	this.setFromJob = function(fromJob) {
+		_fromJobObj = fromJob;
+		this.fromJob = fromJob.entityId;
+	};
+	this.setToJob = function(toJob) {
+		_toJobObj = toJob;
+		this.toJob = toJob.entityId;
+	};
 };

@@ -233,18 +233,26 @@ var TaskModalInstanceCtrl = function($scope, $uibModalInstance) {
     this.execute = function($scope, $routeParams, $uibModal, projectSvc) {
       //populate dashboard entities in $scope
       $scope.jobs = projectSvc.getAllJobs();
+      $scope.flows = projectSvc.getAllFlows();
 
-	 $scope.open1 = function(){
-			var modalInstance = $uibModal.open({
-			templateUrl: 'partials/addJobModalContent.html',
-			controller: 'ModalAddJobInstanceCtrl',
-		});
-	   modalInstance.result.then(function () {
-    }, function () {
-      window.console.info('Add Job Modal dismissed at: ' + new Date());
-    });
-	};
-	
+      $scope.openEditJob = function(){
+          var modalInstance = $uibModal.open({
+            templateUrl: 'partials/addJobModalContent.html',
+            controller: 'ModalAddJobInstanceCtrl',
+            resolve: {
+              job: function () {
+                return null;
+              },
+              graphNode: function() {
+                return null;
+              },
+              links: function() {
+                return null;
+              }
+            }
+          });
+        };
+
     	$scope.openTaskDetails = function(j) {
         var modalInstance = $uibModal.open({
           animation: true,
@@ -269,29 +277,45 @@ var TaskModalInstanceCtrl = function($scope, $uibModalInstance) {
 
     this.graphController = function($scope, $routeParams, $uibModal, projectSvc) {
       $scope.jobs = projectSvc.getAllJobs();
-      $scope.flows = [];//projectSvc.getAllJobs();
+      $scope.flows = projectSvc.getAllFlows();
 
-      $scope.openJobEdit = function(j) {
-        if(j){
-          //EDIT JOB
-          var modalInstance = $uibModal.open({
-             animation: true,
-             templateUrl: 'myModalContent.html',
-             controller: 'TaskDetailsModalCtrl',
-             resolve: {
-               task: function () {
-                 return j.getTask();
-               }
-             }
-           });
-       }
-       else {
-          //NEW JOB
+      $scope.openJobEdit = function(j, graphNode, links) {
 
-       }
+        var modalInstance = $uibModal.open({
+          templateUrl: 'partials/addJobModalContent.html',
+          controller: 'ModalAddJobInstanceCtrl',
+          resolve: {
+            job: function () {
+              return j;
+            },
+            graphNode: function() {
+              return graphNode;
+            },
+            links: function() {
+              return links;
+            }
+          }
+        });
+
+      };
+
+      $scope.flowCreateHeartBeat = function(fromJob, toJob) {
+        window.console.log("flowCreateHeartBeat");
+        window.console.log(fromJob);
+        window.console.log(toJob);
+        if(fromJob && toJob) {
+          try {
+            window.console.log('3PO: ');
+            window.console.log(fromJob.name);
+            window.console.log(' => ');
+            window.console.log(toJob.name);
+            projectSvc.addFlow(fromJob, toJob);
+          } catch(err) {
+            window.console.log(err);
+          }
+        }
+      };
     };
-
-  };
 };
 
 var GanttController= function(){
@@ -339,6 +363,42 @@ var GanttController= function(){
 		}
 	};
 };
+
+function generateFlows(links, graphNode, projectSvc) {
+  var toSplice = links.filter(function(l) {
+    return (l.source === graphNode || l.target === graphNode);
+  });
+  toSplice.map(function(l) {
+    if(l.source == graphNode) {
+      var otherNode = l.target;
+      if(otherNode.job) {
+        var fromJob = graphNode.job;
+        var toJob = otherNode.job;
+            window.console.log('3PO.1: ');
+            window.console.log(fromJob.name);
+            window.console.log(' => ');
+            window.console.log(toJob.name);
+            projectSvc.addFlow(fromJob, toJob);
+
+        projectSvc.addFlow(fromJob, toJob);
+      }
+    }
+    else if(l.target == graphNode) {
+      var otherNode = l.source;
+      if(otherNode.job) {
+        var toJob = graphNode.job;
+        var fromJob = otherNode.job;
+            window.console.log('3PO.2: ');
+            window.console.log(fromJob.name);
+            window.console.log(' => ');
+            window.console.log(toJob.name);
+            projectSvc.addFlow(fromJob, toJob);
+        projectSvc.addFlow(fromJob, toJob);
+      }
+    }
+  });
+}
+
 var JobScheduleController=function(){
        this.execute=function($scope,$routeParams,projectSvc){
                var jobs=projectSvc.getAllJobs();
@@ -375,35 +435,88 @@ var JobScheduleController=function(){
      };
  };
 
-var ModalAddJobInstanceCtrl = function($scope, $uibModalInstance) {
-	  this.execute = function($scope, $routeParams, $uibModalInstance, projectSvc) {
+var ModalAddJobInstanceCtrl = function() {
+    this.execute = function($scope, $routeParams, $uibModalInstance, projectSvc, job, graphNode, links) {
+    window.console.log(job);
+    window.console.log(graphNode);
 
-	  $scope.ok = function () {
+    if(job) {
+      $scope.j_name = job.name;
+      $scope.j_description = job.getTask().description;
+      $scope.dt = job.startTime;
+      $scope.j_duration = job.getTask().durationDays;
+      $scope.j_dependsOn = projectSvc.dependsOn(job);
+      $scope.j_enables = projectSvc.enables(job);
+      $scope.j_resources = job.getTask().resources;
+      $scope.j_percentComplete = job.percentComplete;
+      $scope.job = job;
+    }
+    
+    $scope.ok = function () {
 
-		// Setup the new data to be inserted
-			$scope.newJob = {};
-			$scope.newJob.name = $scope.j_name;
-			$scope.newJob.description = $scope.j_description;
-			$scope.newJob.myTime = $scope.dt;
-			window.console.log('Date is: ' + $scope.dt);			
-			//$scope.newJob.startTime = $scope.j_startTime;	
-			//$scope.newJob.task = $scope.j_task;	
-			
-			$scope.newJob.projectId = projectSvc.getProjectId();
-			
-			projectSvc.addJob($scope.newJob);
-			
-			$uibModalInstance.close();  
-					
-	//    $uibModalInstance.close({rname1: $scope.r_name, rcost1: $scope.r_cost, rtype1: $scope.data.singleSelect, resources1: $scope.resources});  
-	  };
+    // Setup the new data to be inserted
+      var projectId = projectSvc.getProjectId();
+      var name = $scope.j_name;
+      var description = $scope.j_description;
+      var startTime = $scope.dt;
+      window.console.log('Date is: ' + $scope.dt);      
+      var durationDays = $scope.j_duration;
+      var resources = $scope.j_resources;
+      
+      var isValid = projectSvc.validate(job, startTime, durationDays, resources);
 
-	  $scope.cancel = function () {
-		$uibModalInstance.dismiss('cancel','');
-	  };
+      if(isValid) {
+        if($scope.job) { //EDIT
+          var task = $scope.job.getTask();
+          task.description = description;
+          task.durationDays = durationDays;
+          task.resources = resources;
+          //TODO: flaw - all jobs associated with this task affected
+          job.name = name;
+          if(graphNode){
+            graphNode.name = name;
+          }
+          job.startTime = startTime;
+          //EDIT COMPLETE
+        } else { // CREATE
+          var task = $scope.task; //if select task - currently disabled
+          if(!task){
+            var taskName = name + "Task";
+            var deliverables = null;
+            
+            var newTask = new Task(projectId, taskName, description, durationDays, resources, deliverables);
+            projectSvc.addTask(newTask);
+            task = newTask;
+          }
+          var state = JobStates.READY;
+          var percentComplete = 0;
+          var newJob = new Job(projectId, name, task.entityId, startTime, percentComplete, state);
+          newJob.setTask(task);
+          projectSvc.addJob(newJob);
+          if(graphNode){
+            graphNode.name = name;            
+            graphNode.job = newJob;
+          }
+          if(links) {
+            generateFlows(links, graphNode, projectSvc);
+          }
+        }
+      }
+      else {
+        alert("Invalid details");
+      }
 
-	  };  
-	};   
+      $uibModalInstance.close();  
+          
+  //    $uibModalInstance.close({rname1: $scope.r_name, rcost1: $scope.r_cost, rtype1: $scope.data.singleSelect, resources1: $scope.resources});  
+    };
+
+    $scope.cancel = function () {
+    $uibModalInstance.dismiss('cancel','');
+    };
+
+    };  
+  };     
 
 
   this.projectController = new ProjectController();
@@ -416,7 +529,7 @@ var ModalAddJobInstanceCtrl = function($scope, $uibModalInstance) {
   this.taskmodalInstanceController = new TaskModalInstanceCtrl();
   this.jobController = new JobController();
   this.ganttController=new GanttController();
-this.jobScheduleController=new JobScheduleController();
+  this.jobScheduleController=new JobScheduleController();
 };
 
 Controllers._INSTANCE = new Controllers();

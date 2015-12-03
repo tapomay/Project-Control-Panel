@@ -36,3 +36,15 @@ TODO:
 @TODO: project.create
 @TODO validate job def
 @TODO: add pagination
+
+@TODO***
+1. flow
+2. parent
+3. resources
+3. validations
+4. schedule.
+5. ui bug: update job name
+6. test save proj
+7. test import export
+
+job deletion not supported.

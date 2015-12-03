@@ -15,12 +15,13 @@ Array.prototype.toMap = function(){
   return ret;
 }
 
-var Project = function(name, resources, tasks, jobs) {
+var Project = function(name, resources, tasks, jobs, flows) {
 
 	this.name = name;
 	this.tasks = tasks;//array expected
 	this.jobs = jobs;//array expected
 	this.resources = resources;//array expected
+	this.flows = flows;
 
 	var _tasksMap = tasks.toMap();
 	var _resourcesMap = resources.toMap();
@@ -46,13 +47,29 @@ var Project = function(name, resources, tasks, jobs) {
 			jobs.push(jmod);
 		}
 
-		var ret = new Project(obj.name, res, tasks, jobs);
+		var flows = [];
+		for(var i=0; i<obj.flows.length; i++) {
+			var f = obj.flows[i];
+			var fmod = new Flow(f.fromJob, f.toJob);
+			flows.push(fmod);
+		}
+
+		var ret = new Project(obj.name, res, tasks, jobs, flows);
 
 		for(var i=0; i<jobs.length; i++) {
 			var j = jobs[i];
 			var task = ret.getTaskById(j.task);
 			j.setTask(task);
 		}
+
+		for(var i=0; i<flows.length; i++) {
+			var f = flows[i];
+			var fromJobObj = ret.getJobById(f.fromJob);
+			f.setFromJob(fromJobObj);
+			var toJobObj = ret.getJobById(f.toJob);
+			f.setToJob(toJobObj);
+		}
+
 		ret._id = obj._id;
 		return ret;
 	};
@@ -71,6 +88,10 @@ var Project = function(name, resources, tasks, jobs) {
 
 	this.getAllJobs = function() {
 		return this.jobs;
+	};
+
+	this.getAllFlows = function() {
+		return this.flows;
 	};
 
 	this.addTask = function(task) {
@@ -103,9 +124,35 @@ var Project = function(name, resources, tasks, jobs) {
 		return this.name;
 	};
 
+	this.getResourceById = function(entityId) {
+		var ret = _resourcesMap[entityId];
+		return ret;
+	};
+
 	this.getTaskById = function(entityId) {
 		var ret = _tasksMap[entityId];
 		return ret;
+	};
+
+	this.getJobById = function(entityId) {
+		var ret = _jobsMap[entityId];
+		return ret;
+	};
+
+	this.addFlow = function(fromJob, toJob) {
+		
+		var foundFlows = this.flows.filter(function(f) {
+		    return (f.fromJob === fromJob.entityId && f.toJob === toJob.entityId);
+	  	});
+	  	
+	  	if(foundFlows.length > 0) {
+	  		throw "Flow exists : " + fromJob.entityId + " => " + toJob.entityId;
+	  	}
+	  	
+		var f1 = new Flow(fromJob.getEntityId(), toJob.getEntityId());
+        f1.setFromJob(fromJob);
+        f1.setToJob(toJob);
+        this.flows.push(f1);
 	};
 
 };

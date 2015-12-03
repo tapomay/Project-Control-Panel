@@ -26,7 +26,7 @@ pcpBlueControllers.controller('ModalInstanceCtrl', ['$scope', '$routeParams', '$
 pcpBlueControllers.controller('ModalEditInstanceCtrl', ['$scope', '$routeParams', '$uibModalInstance', 'ProjectDataSvc', 'name_passed', 'cost_passed', 'type_passed', controllers.modalEditInstanceController.execute]);
 pcpBlueControllers.controller('TaskCtrl', ['$scope', '$routeParams','$uibModal','ProjectDataSvc', controllers.taskController.execute]);
 pcpBlueControllers.controller('JobCtrl', ['$scope', '$routeParams', '$uibModal', 'ProjectDataSvc', controllers.jobController.execute]);
-pcpBlueControllers.controller('ModalAddJobInstanceCtrl', ['$scope', '$routeParams', '$uibModalInstance', 'ProjectDataSvc', controllers.modalAddJobInstanceController.execute]);
+pcpBlueControllers.controller('ModalAddJobInstanceCtrl', ['$scope', '$routeParams', '$uibModalInstance', 'ProjectDataSvc', 'job', 'graphNode', 'links', controllers.modalAddJobInstanceController.execute]);
 pcpBlueControllers.controller('TaskModalInstanceCtrl', ['$scope', '$routeParams', '$uibModalInstance', 'ProjectDataSvc', controllers.taskmodalInstanceController.execute]);
 pcpBlueControllers.controller('TaskDetailsModalCtrl', controllers.jobController.taskDetailsController);
 pcpBlueControllers.controller('GraphCtrl', ['$scope', '$routeParams', '$uibModal', 'ProjectDataSvc', controllers.jobController.graphController]);
