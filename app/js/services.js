@@ -74,21 +74,19 @@ var ProjectService = function() {
 	};
 	
 	this.addResource = function(resObj) {
-		if(_project.getResourceById(resObj.getEntityId()))
-			throw "Resource already exists: " + resObj.getEntityId();
+		
 
 		var type = ResourceType.get(resObj.type);
 			
 		var r = new Resource(resObj.projectId, resObj.name, resObj.cost, resObj.type);
 		_project.addResource(r);
-		return r;
 	};
 
 	this.addTask = function(taskObj) {
-		if(_project.getTaskById(taskObj.getEntityId()))
-			throw "Task already exists: " + taskObj.getEntityId();
-		_project.addTask(taskObj);
-		return taskObj;
+		//var type = ResourceType.get(taskObj.type);
+			
+		var t = new Task(taskObj.projectId, taskObj.name, taskObj.description, taskObj.durationDays,taskObj.resourcesRequired);
+		_project.addTask(t);
 	};
 
 	this.deleteResource = function(resObj) {

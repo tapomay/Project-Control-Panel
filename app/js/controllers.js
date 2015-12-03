@@ -198,7 +198,7 @@ var TaskModalInstanceCtrl = function($scope, $uibModalInstance) {
     $scope.newTask.description = $scope.t_desc;
     $scope.newTask.durationDays = $scope.t_duration;
 	//window.console.log($scope.data1_multipleSelect[0]);
-    $scope.newTask.resourceList = $scope.data1_multipleSelect; 
+    $scope.newTask.resourcesRequired = $scope.data1_multipleSelect; 
     //$scope.newResource.id = projectSvc.getProjectId();
     
     projectSvc.addTask($scope.newTask);
