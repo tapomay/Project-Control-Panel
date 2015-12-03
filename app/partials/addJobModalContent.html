@@ -51,7 +51,6 @@
           <div class="col-md-4">Resources:</div>
           <div class="col-md-8">
             <ul>
-              <button type="button" class="btn btn-default" ng-click="initAddResource()">Add resources</button>
               <li ng-repeat="item in j_resources">
                   {{item.name}}
               </li>
@@ -60,9 +59,23 @@
         </div>
 
         <div class="row">
+          <div class="col-md-10">
+              <label for="multipleSelect"> Add Resource required: </label><br>
+          <select name="multipleSelect" id="multipleSelect" ng-model="data1_multipleSelect" multiple>
+          <option ng-repeat="item in resourcesAvailable" value={{item.entityId}}>{{item.name}}</option>
+      </select><br>
+          </div>
+        </div>
+
+        <div class="row">
           <div class="col-md-4">Percent complete:</div>
           <div class="col-md-8">{{j_percentComplete}}</div>
         </div>
+
+        <button type="button" class="btn btn-default" ng-show="!isCompositeOrNew(job)" ng-click="makeComposite(job)">Make Composite</button>
+
+        <button type="button" class="btn btn-default" ng-show="isCompositeOrNew(job)" ng-click="addChild(job)">Add child</button>
+
 		</div>
     <div class="modal-footer">
         <button class="btn btn-primary" type="button" ng-click="ok()">SAVE</button>

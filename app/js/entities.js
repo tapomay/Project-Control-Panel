@@ -211,3 +211,16 @@ var Flow = function(fromJob, toJob) {
 		this.toJob = toJob.entityId;
 	};
 };
+
+var CompositeJob = function(job) {
+	this.projectId = job.projectId;
+	this.name = job.name;
+	this.task = job.task;
+	this.startTime = job.startTime;
+	this.percentComplete = job.percentComplete;
+	this.state = job.state;
+	this.entityId = job.entityId;
+	var _taskObj = job.getTask();
+};
+
+CompositeJob.prototype = new Job();

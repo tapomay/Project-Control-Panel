@@ -140,6 +140,10 @@ var ProjectService = function() {
 		_project.addFlow(fromJob, toJob);
 	};
 	
+	this.getResourceById = function(entityId) {
+		return _project.getResourceById(entityId);
+	};
+
 	dummyData();
 };
 

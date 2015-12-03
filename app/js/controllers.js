@@ -269,7 +269,7 @@ var TaskModalInstanceCtrl = function($scope, $uibModalInstance) {
 
     this.taskDetailsController = function($scope, $uibModalInstance, task) {
       $scope.t = task;
-
+      $scope.resources = task.resourcesRequired;
       $scope.ok = function () {
         $uibModalInstance.close();
       };
@@ -483,11 +483,48 @@ var JobScheduleController=function(){
      };
  };
 
+var resourcesUnion = function(res1, res2) {
+  var ret = [];
+  if(res1) {
+    ret = res1;
+  }
+  if(res2) {
+    for(var i=0; i<res2.length; i++) {
+      if(ret.indexOf(res2[i]) == -1) {
+        ret.push(res2[i]);
+      }
+    }    
+  }
+  return ret;
+};
+
+function idsToResources(newResources, projectSvc) {
+  var ret = [];
+  for(var i = 0; i < newResources.length; i++) {
+    var id = newResources[i];
+    var res = projectSvc.getResourceById(id);
+    ret.push(res);
+  }
+  return ret;
+}
+
 var ModalAddJobInstanceCtrl = function() {
     this.execute = function($scope, $routeParams, $uibModalInstance, projectSvc, job, graphNode, links) {
     window.console.log(job);
     window.console.log(graphNode);
 
+    $scope.isCompositeOrNew = function(job) {
+      var ret = false;
+      if(job){
+        if(job instanceof CompositeJob) {
+          ret = true;
+        }
+      } else {
+        ret = true; //hide if new
+      }
+      return ret;
+    };
+    $scope.resourcesAvailable = projectSvc.getAllResources();
     if(job) {
       $scope.j_name = job.name;
       $scope.j_description = job.getTask().description;
@@ -495,7 +532,7 @@ var ModalAddJobInstanceCtrl = function() {
       $scope.j_duration = job.getTask().durationDays;
       $scope.j_dependsOn = projectSvc.dependsOn(job);
       $scope.j_enables = projectSvc.enables(job);
-      $scope.j_resources = job.getTask().resources;
+      $scope.j_resources = job.getTask().resourcesRequired;
       $scope.j_percentComplete = job.percentComplete;
       $scope.job = job;
     }
@@ -510,15 +547,19 @@ var ModalAddJobInstanceCtrl = function() {
       window.console.log('Date is: ' + $scope.dt);      
       var durationDays = $scope.j_duration;
       var resources = $scope.j_resources;
-      
+      var newResources = $scope.data1_multipleSelect; 
+      newResources = idsToResources(newResources, projectSvc);
+      resources = resourcesUnion(resources, newResources);
       var isValid = projectSvc.validate(job, startTime, durationDays, resources);
+      window.console.log("R2D2");
+      window.console.log(resources);
 
       if(isValid) {
         if($scope.job) { //EDIT
           var task = $scope.job.getTask();
           task.description = description;
           task.durationDays = durationDays;
-          task.resources = resources;
+          task.resourcesRequired = resources;
           //TODO: flaw - all jobs associated with this task affected
           job.name = name;
           if(graphNode){

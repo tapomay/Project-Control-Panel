@@ -26,17 +26,16 @@
             <div class="col-md-8">{{t.durationDays}} days</div>
         </div>
         <div class="row">
-          <div class="col-md-4">Labor required:</div>
-          <div class="col-md-8">{{t.laborRequired}}</div>
+          <div class="col-md-4">Resources required:</div>
+          <div class="col-md-8">
+            <ul>
+              <li ng-repeat="item in resources">
+                  {{item.name}}
+              </li>
+            </ul>
+          </div>
         </div>
-        <div class="row">
-          <div class="col-md-4">Equipment required:</div>
-          <div class="col-md-8">{{t.equipmentRequired}}</div>
-        </div>
-        <div class="row">
-          <div class="col-md-4">Material required:</div>
-          <div class="col-md-8">{{t.materialRequired}}</div>
-        </div>
+      
       </div>
       <div class="modal-footer">
           <button class="btn btn-primary" type="button" ng-click="  ok()">OK</button>
