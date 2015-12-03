@@ -398,7 +398,6 @@ function generateFlows(links, graphNode, projectSvc) {
     }
   });
 }
-
 var JobScheduleController=function(){
        this.execute=function($scope,$routeParams,projectSvc){
                var jobs=projectSvc.getAllJobs();
@@ -408,8 +407,9 @@ var JobScheduleController=function(){
                for(var i=0; i<jobs.length; i++) {
                val = jobs[i];
                for(var j=0;j<val.getTask().durationDays;j++){
-                               var item={};
-                       item.day=new moment(val.startTime).add('days',j).toDate();
+                       var item={};
+                       var newDate=new moment(val.startTime).add('days',j);
+                       item.day=new moment(newDate).format("MM/DD/YYYY");
                        item.jobName=val.name;
                        agenda.push(item);
                }
@@ -432,6 +432,54 @@ var JobScheduleController=function(){
                    }
                    return -1;
                }
+        $scope.exportToExcel=function(){
+          var _exportCSV=JSON.stringify($scope.schedule);
+      function JSONToCSVConvertor(_exportCSV,ShowLabel) {
+          var arrData = typeof _exportCSV != 'object' ? JSON.parse(_exportCSV) : _exportCSV;
+          var CSV = '';    
+          if (ShowLabel) {
+              var row = "";
+              for (var index in arrData[0]) {
+                if(index!="$$hashKey"){
+                  row += index + ',';
+              }
+              }
+              row = row.slice(0, -1);
+              CSV += row + '\r\n';
+          }
+          for (var i = 0; i < arrData.length; i++) {
+              var row = "";
+              for (var index in arrData[i]) {
+                if(index!="$$hashKey")
+                  row += '"' + arrData[i][index] + '",';
+              }
+              row.slice(0, row.length - 1);
+              CSV += row + '\r\n';
+          }
+        return CSV;
+          if (CSV == '') {        
+              alert("Invalid data");
+              return;
+          }   
+      }
+      var saveFile=function(name,data) {
+          var chooser = document.querySelector(name);
+          chooser.addEventListener("change", function(evt) {
+            console.log(this.value); // get your file name
+           var fs = require('fs');// save it now
+      fs.writeFile(this.value, data, function(err) {
+          if(err) {
+             alert("error"+err);
+          }
+      });
+          }, false);
+
+          chooser.click();  
+        }
+
+       var CSVData= JSONToCSVConvertor(_exportCSV,true);
+      saveFile('#export_file',CSVData);
+        };
      };
  };
 

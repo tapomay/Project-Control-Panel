@@ -1,10 +1,18 @@
 <body>
 <div>
-	<table id="myTableData"  border="1" cellpadding="2">
+	<table id="jobSchedule"  border="1" cellpadding="2">
+    <tr>
+        <td><b>Day</b></td>
+        <td><b>Job Name</b></td>       
+    </tr>
     <tr ng-repeat="item in schedule">
     	<td><b>{{item.day}}</b></td>
 		<td><b>{{item.jobName}} </b></td>
     </tr>
 	</table>
+	 <button class="btn btn-link" ng-click="exportToExcel()">
+        <span class="glyphicon glyphicon-share"></span> Export to Excel
+    </button>
+    <input id="export_file" type="file" nwsaveas style="display:none" nwworkingdir=""/>
 </div>
 </body>
