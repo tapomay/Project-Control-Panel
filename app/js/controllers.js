@@ -202,6 +202,20 @@ var Controllers = function() {
 
     this.graphController = function($scope, $routeParams, $uibModal, projectSvc) {
       $scope.jobs = projectSvc.getAllJobs();
+      $scope.flows = [];//projectSvc.getAllJobs();
+
+      $scope.openJobEdit = function(j) {
+        var modalInstance = $uibModal.open({
+           animation: true,
+           templateUrl: 'myModalContent.html',
+           controller: 'TaskDetailsModalCtrl',
+           resolve: {
+             task: function () {
+               return j.getTask();
+             }
+           }
+         });
+       };
     };
 
   };

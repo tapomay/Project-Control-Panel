@@ -1,8 +1,49 @@
 <link rel="stylesheet" href="partials/css/graph.css">
+
+<title>THIS IS GRAPH</title>
+<script type="text/javascript">
+	var ngScopeBlue = angular.element(document.getElementById('angularRoutedView')).scope();
+</script>
+
 <script src="bower_components/d3/d3.min.js"></script>
 <script src="js/graph.js"></script>
 
-<title>THIS IS GRAPH</title>
-
 <svg width="960" height="500" oncontextmenu='return false;'>
 </svg>
+
+  <script type="text/ng-template" id="myModalContent.html">
+    <div class="modal-header">
+        <h3 class="modal-title">Task Details</h3>
+    </div>
+    <div class="modal-body">
+      <div>
+        <div class="row">
+          <div class="col-md-4">Task name:</div>
+          <div class="col-md-8">{{t.name}}</div>
+        </div>
+        <div class="row">
+          <div class="col-md-4">Description:</div>
+          <div class="col-md-8">{{t.description}}</div>
+        </div>
+        <div class="row">
+           <div class="col-md-4">Duration:</div>
+            <div class="col-md-8">{{t.durationDays}} days</div>
+        </div>
+        <div class="row">
+          <div class="col-md-4">Labor required:</div>
+          <div class="col-md-8">{{t.laborRequired}}</div>
+        </div>
+        <div class="row">
+          <div class="col-md-4">Equipment required:</div>
+          <div class="col-md-8">{{t.equipmentRequired}}</div>
+        </div>
+        <div class="row">
+          <div class="col-md-4">Material required:</div>
+          <div class="col-md-8">{{t.materialRequired}}</div>
+        </div>
+      </div>
+      <div class="modal-footer">
+          <button class="btn btn-primary" type="button" ng-click="  ok()">OK</button>
+      </div>
+    </div>
+  </script>

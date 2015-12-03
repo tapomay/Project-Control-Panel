@@ -3,23 +3,64 @@ var width  = 960,
     height = 500,
     colors = d3.scale.category10();
 
+//@R2D2: svg tag defined in graph.html
 var svg = d3.select('svg');
+
+//@R2D2: required to prevent modal popup in case of creating new node
 var newNodeFlag = true;
 
 // set up initial nodes and links
 //  - nodes are known by 'id', not by index in array.
 //  - reflexive edges are indicated on the node (as a bold black circle).
 //  - links are always source < target; edge directions are set by 'left' and 'right'.
-var nodes = [
-    {id: 0, reflexive: false},
-    {id: 1, reflexive: true },
-    {id: 2, reflexive: false}
-  ],
-  lastNodeId = 2,
-  links = [
-    {source: nodes[0], target: nodes[1], left: false, right: true },
-    {source: nodes[1], target: nodes[2], left: false, right: true }
-  ];
+
+//@R2D2:
+var GraphJobNode = function(id, name, reflexive, job) {
+  this.id = id;
+  this.reflexive = reflexive;
+  this.name = name;
+  this.job = job;
+};
+
+//@R2D2:
+GraphJobNode.entityidMap = {};
+
+// var nodes = [
+//     {id: 0, name:'n0', reflexive: false},
+//     {id: 1, name:'n1', reflexive: true },
+//     {id: 2, name:'n2', reflexive: false}
+//   ],
+//   lastNodeId = 2,
+//   links = [
+//     {source: nodes[0], target: nodes[1], left: false, right: true },
+//     {source: nodes[1], target: nodes[2], left: false, right: true }
+//   ];
+
+var nodes = [], lastNodeId = 0, links = [];
+
+//@R2D2: need of initNode: 
+//the angular scope is not populated yet.
+//called initGraph from within mouseUp(). Scope is ready then.
+var initNode = new GraphJobNode(-1, "Load jobs", false, null);
+nodes.push(initNode);
+
+function initGraph(populatedAngularScope) {
+  var jobs = populatedAngularScope.jobs;
+  // window.console.log(jobs);
+  for(var i = 0; i<jobs.length; i++) {
+    var j = jobs[i];
+    var jobNode = new GraphJobNode(++lastNodeId, j.name.substring(0,10), false, j);
+    nodes.push(jobNode);
+    GraphJobNode.entityidMap[j.entityId] = jobNode;
+  }
+
+  var flows = populatedAngularScope.flows;
+  // window.console.log(flows);
+  for(var i = 0; i<flows.length; i++) {
+    var f = flows[i];
+  }
+  restart();
+}
 
 // init D3 force layout
 var force = d3.layout.force()
@@ -98,6 +139,7 @@ function tick() {
   });
 }
 
+//@R2D2: DONOT TOUCH restart() method.
 // update graph (called when needed)
 function restart() {
   // path (link) group
@@ -227,7 +269,7 @@ function restart() {
       .attr('x', 0)
       .attr('y', 4)
       .attr('class', 'id')
-      .text(function(d) { return d.id; });
+      .text(function(d) { return d.name; });
 
   // remove old nodes
   circle.exit().remove();
@@ -246,8 +288,9 @@ function mousedown() {
   if(d3.event.ctrlKey || mousedown_node || mousedown_link) return;
 
   // insert new node at point
+  var nodeData = {prop1:"blah-" + (lastNodeId + 1)};
   var point = d3.mouse(this),
-      node = {id: ++lastNodeId, reflexive: false};
+      node = {id: ++lastNodeId, name: 'n' + (lastNodeId-1), reflexive: false, nodeData:nodeData};
   node.x = point[0];
   node.y = point[1];
   nodes.push(node);
@@ -265,9 +308,29 @@ function mousemove() {
 }
 
 function mouseup() {
-  if(selected_node && !newNodeFlag)
-    alert(selected_node.id);
+
+  //@R2D2: Open Job edit modal if conditions applied
+  if(selected_node && !newNodeFlag) {
+    // alert(selected_node.id);
+    // alert(JSON.stringify(ngScopeBlue));
+    // alert(ngScopeBlue.openJobEdit);
+    // alert(ngScopeBlue.jobs);
+
+    //@R2D2: need of initNode: 
+    //the angular scope is not populated until now.
+    //pop the initNode and populate existing jobs
+    if(selected_node === initNode) { 
+      nodes.pop();
+      //@R2D2: ngScopeBlue extracted from angular in graph.html
+      initGraph(ngScopeBlue);
+    }
+    else {
+      //@R2D2: ngScopeBlue extracted from angular in graph.html
+      ngScopeBlue.openJobEdit(selected_node.job);      
+    }
+  }
   newNodeFlag = false;
+
   if(mousedown_node) {
     // hide drag line
     drag_line
