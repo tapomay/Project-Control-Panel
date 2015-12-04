@@ -138,7 +138,16 @@ var ProjectService = function() {
 		return ret;
 	}
 
-	this.validate = function(job, startTime, durationDays, resources) {
+	/**
+	job: job being edited. Null if new job.
+	startTime: startTime set by user
+	durationDays: duration set by user
+	resources: resources the job is dependent on. set by user
+	graphNode: node representing a new job
+	links: all edges in graph.
+	graphNode and links help in validating predecessor flows coming into a node for a new job.
+	**/
+	this.validate = function(job, startTime, durationDays, resources, graphNode, links) {
 		var ret = [true, "OK"];
 		var projectedEndTime = startTime.addDays(durationDays);
 		// check parentJob conditions
@@ -146,7 +155,7 @@ var ProjectService = function() {
 		// 	startime >= parentJob.startime and endTime < parentJob.endTime
 		if(job && !job.isComposite && job.parent) {
 			if(startTime < job.parent.startTime || projectedEndTime > job.parent.getEndTime()){
-				ret = [false, "Duration exceeds parent"];
+				ret = [false, "Duration exceeds parent: parent.end = " + job.parent.getEndTime().toString()];
 			}
 		}
 
@@ -158,18 +167,51 @@ var ProjectService = function() {
 			for (var i = pre.length - 1; i >= 0; i--) {
 				var p = pre[i];
 				if(startTime < p.getEndTime()) {
-					ret = [false, "Starts before predecessor"];
+					ret = [false, "Starts before predecessor: " + p.name];
 					break;
 				}
 			}
 		}
 
+		// for each enables:
+		// 	check endtime >= dependsOn.startTime
+
+		if(job) {
+			var succ = this.enables(job);
+			for (var i = succ.length - 1; i >= 0; i--) {
+				var s = succ[i];
+				if(projectedEndTime > s.startTime) {
+					ret = [false, "Ends after successor: " + s.name];
+					break;
+				}
+			}
+		}
 		// for each resource
 		// 	isAvailable(r, startime, endTime)
 		if(!_project.isResourceAvailable(resources, startTime, durationDays)) {
-			ret = [false, "Resource unavailable"];
+			if(!job || (job && !job.isComposite)){
+				ret = [false, "Resource unavailable"];
+			}
 		}
 
+		//check incoming flows for dependsOn violation
+		if(graphNode) {
+			var dependsOnEdges = links.filter(function(l) {
+				return (l.target === graphNode);
+			});
+			window.console.log('dependsOnEdges');
+			window.console.log(dependsOnEdges);
+			for (var i = dependsOnEdges.length - 1; i >= 0; i--) {
+				var source = dependsOnEdges[i].source;
+				var dependsOnJob = source.job;
+				window.console.log('dependsOnJob');
+				window.console.log(dependsOnJob);
+				if(dependsOnJob && startTime < dependsOnJob.getEndTime()) {
+					ret = [false, "Starts before predecessor: " + dependsOnJob.name];
+					break;
+				}
+			};
+		}
 		return ret;
 	};
 

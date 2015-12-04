@@ -249,6 +249,8 @@ var CompositeJob = function(job) {
 		_taskObj = t;
 	};
 
+	this.getEndTime = function(){return this.startTime.addDays(_taskObj.durationDays)};
+	
 	this.addChild = function(childjob) {
 		this.children.push(childjob);
 	};

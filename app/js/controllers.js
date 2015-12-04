@@ -554,7 +554,7 @@ var ModalAddJobInstanceCtrl = function() {
       var newResources = $scope.data1_multipleSelect; 
       newResources = idsToResources(newResources, projectSvc);
       resources = resourcesUnion(resources, newResources);
-      var validation = projectSvc.validate($scope.job, startTime, durationDays, resources);
+      var validation = projectSvc.validate($scope.job, startTime, durationDays, resources, graphNode, links);
       var isValid = validation[0];
       if(isValid) {
           if($scope.job) { //EDIT
