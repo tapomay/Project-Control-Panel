@@ -27,7 +27,7 @@ pcpBlueControllers.controller('ModalEditInstanceCtrl', ['$scope', '$routeParams'
 pcpBlueControllers.controller('TaskCtrl', ['$scope', '$routeParams','$uibModal','ProjectDataSvc', controllers.taskController.execute]);
 pcpBlueControllers.controller('JobCtrl', ['$scope', '$routeParams', '$uibModal', 'ProjectDataSvc', controllers.jobController.execute]);
 pcpBlueControllers.controller('ModalAddJobInstanceCtrl', ['$scope', '$routeParams', '$uibModal', '$uibModalInstance', 'ProjectDataSvc', 'job', 'graphNode', 'links', controllers.modalAddJobInstanceController.execute]);
-​pcpBlueControllers.controller('TaskModalInstanceCtrl', ['$scope', '$routeParams', '$uibModalInstance', 'ProjectDataSvc', controllers.taskmodalInstanceController.execute]);
+pcpBlueControllers.controller('TaskModalInstanceCtrl', ['$scope', '$routeParams', '$uibModalInstance', 'ProjectDataSvc', controllers.taskmodalInstanceController.execute]);
 pcpBlueControllers.controller('TaskDetailsModalCtrl', controllers.jobController.taskDetailsController);
 pcpBlueControllers.controller('GraphCtrl', ['$scope', '$routeParams', '$uibModal', 'ProjectDataSvc', controllers.jobController.graphController]);
 pcpBlueControllers.controller('GanttViewCtrl',['$scope','$routeParams','ProjectDataSvc',controllers.ganttController.execute]);

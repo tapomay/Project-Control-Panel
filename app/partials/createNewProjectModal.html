@@ -5,11 +5,12 @@ function createNewProject()
 	var projectService = angular.element(document.getElementById('angularRoutedView')).injector().get('ProjectDataSvc');
 	var name = ngScopeBlue.projectName;
 	var date = ngScopeBlue.dt;
-	alert(name+"\n"+date);
+	//alert(name+"\n"+date);
 	projectService.createNewProject(name,date);
 	var projectName = projectService.activeProject();
 	document.getElementById('projectName').innerHTML = projectName;
 	$('#myModal').hide();
+	alert("The project "+ projectName + " is ready to use.");
 }
 
 </script>
