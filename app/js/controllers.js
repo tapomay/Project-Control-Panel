@@ -513,21 +513,20 @@ function idsToResources(newResources, projectSvc) {
 }
 
 var ModalAddJobInstanceCtrl = function() {
-    this.execute = function($scope, $routeParams, $uibModalInstance, projectSvc, job, graphNode, links) {
+  this.execute = function($scope, $routeParams, $uibModal, $uibModalInstance, projectSvc, job, graphNode, links) {
     window.console.log(job);
     window.console.log(graphNode);
 
-    $scope.isCompositeOrNew = function(job) {
+    $scope.isComposite = function(job) {
       var ret = false;
       if(job){
         if(job instanceof CompositeJob) {
           ret = true;
         }
-      } else {
-        ret = true; //hide if new
       }
       return ret;
     };
+
     $scope.resourcesAvailable = projectSvc.getAllResources();
     if(job) {
       $scope.j_name = job.name;
@@ -540,10 +539,10 @@ var ModalAddJobInstanceCtrl = function() {
       $scope.j_percentComplete = job.percentComplete;
       $scope.job = job;
     }
-    
+
     $scope.ok = function () {
 
-    // Setup the new data to be inserted
+      // Setup the new data to be inserted
       var projectId = projectSvc.getProjectId();
       var name = $scope.j_name;
       var description = $scope.j_description;
@@ -559,57 +558,102 @@ var ModalAddJobInstanceCtrl = function() {
       window.console.log(resources);
 
       if(isValid) {
-        if($scope.job) { //EDIT
-          var task = $scope.job.getTask();
-          task.description = description;
-          task.durationDays = durationDays;
-          task.resourcesRequired = resources;
-          //TODO: flaw - all jobs associated with this task affected
-          job.name = name;
-          if(graphNode){
-            graphNode.name = name;
-          }
-          job.startTime = startTime;
-          //EDIT COMPLETE
-        } else { // CREATE
-          var task = $scope.task; //if select task - currently disabled
-          if(!task){
-            var taskName = name + "Task";
-            var deliverables = null;
-            
-            var newTask = new Task(projectId, taskName, description, durationDays, resources, deliverables);
-            projectSvc.addTask(newTask);
-            task = newTask;
-          }
-          var state = JobStates.READY;
-          var percentComplete = 0;
-          var newJob = new Job(projectId, name, task.entityId, startTime, percentComplete, state);
-          newJob.setTask(task);
-          projectSvc.addJob(newJob);
-          if(graphNode){
-            graphNode.name = name;            
-            graphNode.job = newJob;
-          }
-          if(links) {
-            generateFlows(links, graphNode, projectSvc);
+          if($scope.job) { //EDIT
+            window.console.log('Editing');
+            window.console.log($scope.job.getTask());
+
+            var task = $scope.job.getTask();
+            task.description = description;
+            task.durationDays = durationDays;
+            task.resourcesRequired = resources;
+            //TODO: flaw - all jobs associated with this task affected
+            job.name = name;
+            if(graphNode){
+              graphNode.name = name;
+            }
+            job.startTime = startTime;
+            //EDIT COMPLETE
+          } else { // CREATE
+            var task = $scope.task; //if select task - currently disabled
+            if(!task){
+              var taskName = name + "Task";
+              var deliverables = null;
+              
+              var newTask = new Task(projectId, taskName, description, durationDays, resources, deliverables);
+              projectSvc.addTask(newTask);
+              task = newTask;
+            }
+            var state = JobStates.READY;
+            var percentComplete = 0;
+            var newJob = new Job(projectId, name, task.entityId, startTime, percentComplete, state);
+            newJob.setTask(task);
+            projectSvc.addJob(newJob);
+            if(graphNode){
+              graphNode.name = name;            
+              graphNode.job = newJob;
+            }
+            if(links) {
+              generateFlows(links, graphNode, projectSvc);
+            }
           }
         }
-      }
-      else {
-        alert("Invalid details");
-      }
+        else {
+          alert("Invalid details");
+        }
 
-      $uibModalInstance.close();  
-          
-  //    $uibModalInstance.close({rname1: $scope.r_name, rcost1: $scope.r_cost, rtype1: $scope.data.singleSelect, resources1: $scope.resources});  
+        $uibModalInstance.close();  
+
+    //    $uibModalInstance.close({rname1: $scope.r_name, rcost1: $scope.r_cost, rtype1: $scope.data.singleSelect, resources1: $scope.resources});  
+  };
+
+  $scope.cancel = function () {
+    $uibModalInstance.dismiss('cancel','');
+  };
+
+  $scope.makeComposite = function(job) {
+    var compositeJob = projectSvc.convertToComposite(job);
+        // window.console.log("NEW COMP JOB");
+        // window.console.log(compositeJob);
+        $scope.job = compositeJob;
+      };
+
+      $scope.addChild = function(job) {
+        var modalInstance = $uibModal.open({
+          animation: true,
+          templateUrl: 'myModalContent.html',
+          controller: 'ChildJobsCtrl',
+          resolve: {
+            items: function () {
+              return projectSvc.getAllJobs();
+            }
+          }
+        });
+
+        modalInstance.result.then(function (selectedItem) {
+          window.console.log(selectedItem);
+          projectSvc.setChild($scope.job, selectedItem);
+        }, function () {
+          $log.info('Modal dismissed at: ' + new Date());
+        });
+      };
+    };//execute  
+  };
+
+  var ChildJobsCtrl = function ($scope, $uibModalInstance, items) {
+
+    $scope.items = items;
+    $scope.selected = {
+      item: 'None'
+    };
+
+    $scope.ok = function () {
+      $uibModalInstance.close($scope.selected.item);
     };
 
     $scope.cancel = function () {
-    $uibModalInstance.dismiss('cancel','');
+      $uibModalInstance.dismiss('cancel');
     };
-
-    };  
-  };     
+  };
 
 
   this.projectController = new ProjectController();
@@ -623,6 +667,7 @@ var ModalAddJobInstanceCtrl = function() {
   this.jobController = new JobController();
   this.ganttController=new GanttController();
   this.jobScheduleController=new JobScheduleController();
+  this.childJobsCtrl = ChildJobsCtrl;
 };
 
 Controllers._INSTANCE = new Controllers();

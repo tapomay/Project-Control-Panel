@@ -221,6 +221,23 @@ var CompositeJob = function(job) {
 	this.state = job.state;
 	this.entityId = job.entityId;
 	var _taskObj = job.getTask();
+	this.children = [];
+
+	this.getTask = function(){
+		return _taskObj;
+	};
+
+	this.setTask = function(t){
+		if(!(t instanceof Task)){
+			throw "Invalid task: " + t;
+		}
+		this.task = t.entityId;
+		_taskObj = t;
+	};
+	this.addChild = function(childjob) {
+		this.children.push(childjob);
+	};
+	
 };
 
 CompositeJob.prototype = new Job();
