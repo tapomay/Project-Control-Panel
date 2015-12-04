@@ -188,7 +188,7 @@ var ProjectService = function() {
 		}
 		// for each resource
 		// 	isAvailable(r, startime, endTime)
-		if(!_project.isResourceAvailable(resources, startTime, durationDays)) {
+		if(!_project.isResourceAvailable(resources, job, startTime, durationDays)) {
 			if(!job || (job && !job.isComposite)){
 				ret = [false, "Resource unavailable"];
 			}

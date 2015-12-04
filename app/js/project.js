@@ -207,7 +207,7 @@ var Project = function(name, startDate, resources, tasks, jobs, flows) {
         }
 	};
 
-	this.isResourceAvailable = function(res, startTime, duration) {
+	this.isResourceAvailable = function(res, job, startTime, duration) {
 		var ret = true;
 		var nxtDate;
 		var i = startTime;
@@ -218,7 +218,13 @@ var Project = function(name, startDate, resources, tasks, jobs, flows) {
 				var jobsConsuming = resDateJobs[r.entityId][idate];
 				if(jobsConsuming && jobsConsuming.length > 0) {
 					ret = false;
-					break;
+					if(job) {
+						var jobIndex = jobsConsuming.indexOf(job.entityId);
+						if(jobIndex == 0){
+							ret = true;
+						}
+						break;
+					}
 				}
 			}
 		}
