@@ -504,10 +504,12 @@ var resourcesUnion = function(res1, res2) {
 
 function idsToResources(newResources, projectSvc) {
   var ret = [];
-  for(var i = 0; i < newResources.length; i++) {
-    var id = newResources[i];
-    var res = projectSvc.getResourceById(id);
-    ret.push(res);
+  if(newResources) {
+    for(var i = 0; i < newResources.length; i++) {
+      var id = newResources[i];
+      var res = projectSvc.getResourceById(id);
+      ret.push(res);
+    }
   }
   return ret;
 }
