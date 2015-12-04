@@ -223,7 +223,13 @@ var TaskModalInstanceCtrl = function($scope, $uibModalInstance) {
 
 
 
-
+var compositeCheck = function(job) {
+  var ret = false;
+  if(job){
+    ret = job.isComposite;
+  }
+  return ret;
+};
 
   /**
     Controller for /jobs
@@ -234,7 +240,8 @@ var TaskModalInstanceCtrl = function($scope, $uibModalInstance) {
       //populate dashboard entities in $scope
       $scope.jobs = projectSvc.getAllJobs();
       $scope.flows = projectSvc.getAllFlows();
-
+      $scope.isComposite = compositeCheck;
+      
       $scope.openEditJob = function(){
           var modalInstance = $uibModal.open({
             templateUrl: 'partials/addJobModalContent.html',
@@ -519,15 +526,7 @@ var ModalAddJobInstanceCtrl = function() {
     window.console.log(job);
     window.console.log(graphNode);
 
-    $scope.isComposite = function(job) {
-      var ret = false;
-      if(job){
-        if(job instanceof CompositeJob) {
-          ret = true;
-        }
-      }
-      return ret;
-    };
+    $scope.isComposite = compositeCheck;
 
     $scope.resourcesAvailable = projectSvc.getAllResources();
     if(job) {
@@ -556,13 +555,9 @@ var ModalAddJobInstanceCtrl = function() {
       newResources = idsToResources(newResources, projectSvc);
       resources = resourcesUnion(resources, newResources);
       var isValid = projectSvc.validate(job, startTime, durationDays, resources);
-      window.console.log("R2D2");
-      window.console.log(resources);
 
       if(isValid) {
           if($scope.job) { //EDIT
-            window.console.log('Editing');
-            window.console.log($scope.job.getTask());
 
             var task = $scope.job.getTask();
             task.description = description;
@@ -614,31 +609,34 @@ var ModalAddJobInstanceCtrl = function() {
 
   $scope.makeComposite = function(job) {
     var compositeJob = projectSvc.convertToComposite(job);
-        // window.console.log("NEW COMP JOB");
-        // window.console.log(compositeJob);
+        window.console.log("NEW COMP JOB");
+        window.console.log(compositeJob);
         $scope.job = compositeJob;
-      };
+        if(graphNode) {
+          graphNode.job = compositeJob;
+          graphNode.name = compositeJob.name;
+        }
+  };
 
-      $scope.addChild = function(job) {
-        var modalInstance = $uibModal.open({
-          animation: true,
-          templateUrl: 'myModalContent.html',
-          controller: 'ChildJobsCtrl',
-          resolve: {
-            items: function () {
-              return projectSvc.getAllJobs();
-            }
-          }
-        });
+  $scope.addChild = function(job) {
+    var modalInstance = $uibModal.open({
+      animation: true,
+      templateUrl: 'myModalContent.html',
+      controller: 'ChildJobsCtrl',
+      resolve: {
+        items: function () {
+          return projectSvc.getAllJobs();
+        }
+      }
+    });
 
-        modalInstance.result.then(function (selectedItem) {
-          window.console.log(selectedItem);
-          projectSvc.setChild($scope.job, selectedItem);
-        }, function () {
-          $log.info('Modal dismissed at: ' + new Date());
-        });
-      };
-    };//execute  
+    modalInstance.result.then(function (selectedItem) {
+      projectSvc.setChild($scope.job, selectedItem);
+    }, function () {
+      $log.info('Modal dismissed at: ' + new Date());
+    });
+  };
+  };//execute  
   };
 
   var ChildJobsCtrl = function ($scope, $uibModalInstance, items) {

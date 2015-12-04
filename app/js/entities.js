@@ -141,6 +141,7 @@ var Job = function(projectId, name, task, startTime, percentComplete, state) {
 	this.state = state;
 	this.entityId = uuid.v4();
 	var _taskObj = null;
+	this.isComposite = false;
 
 /*
 	if (!(this.startTime instanceof Date)) {
@@ -213,6 +214,7 @@ var Flow = function(fromJob, toJob) {
 };
 
 var CompositeJob = function(job) {
+
 	this.projectId = job.projectId;
 	this.name = job.name;
 	this.task = job.task;
@@ -222,6 +224,7 @@ var CompositeJob = function(job) {
 	this.entityId = job.entityId;
 	var _taskObj = job.getTask();
 	this.children = [];
+	this.isComposite = true;
 
 	this.getTask = function(){
 		return _taskObj;

@@ -177,6 +177,7 @@ var ProjectService = function() {
     this.setChild = function(parent, child) {
         window.console.log(parent);
         window.console.log(child);
+        parent.addChild(child);
 	};
 	dummyData();
 };

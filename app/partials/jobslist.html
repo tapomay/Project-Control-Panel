@@ -65,6 +65,17 @@
               <div class="col-md-4">State:</div>
               <div class="col-md-8">{{j.state}}</div>
             </div>
+            <div class="row" ng-show = "isComposite(j)">
+              <div class="col-md-4">Children:</div>
+              <div class="col-md-8">
+                <ul>
+                  <li ng-repeat="item in j.children">
+                      {{item.name}}
+                  </li>
+                </ul>
+              </div>
+            </div>
+
             <div class="row">
               <div class="col-md-4">Task:</div>
               <div class="col-md-8"><button type="button" class="btn btn-primary" ng-click="openTaskDetails(j)">{{j.getTask().name}}</button></div>
