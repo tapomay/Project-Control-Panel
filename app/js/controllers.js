@@ -543,7 +543,7 @@ var ModalAddJobInstanceCtrl = function() {
 
     $scope.ok = function () {
 
-      // Setup the new data to be inserted
+      // Setup the new data to be inserted/edited
       var projectId = projectSvc.getProjectId();
       var name = $scope.j_name;
       var description = $scope.j_description;
@@ -554,7 +554,7 @@ var ModalAddJobInstanceCtrl = function() {
       var newResources = $scope.data1_multipleSelect; 
       newResources = idsToResources(newResources, projectSvc);
       resources = resourcesUnion(resources, newResources);
-      var isValid = projectSvc.validate(job, startTime, durationDays, resources);
+      var isValid = projectSvc.validate($scope.job, startTime, durationDays, resources);
 
       if(isValid) {
           if($scope.job) { //EDIT

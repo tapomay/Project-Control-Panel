@@ -143,6 +143,10 @@ var Job = function(projectId, name, task, startTime, percentComplete, state) {
 	var _taskObj = null;
 	this.isComposite = false;
 
+	this.setParent = function(parent) {
+		this.parent = parent;
+	}
+
 /*
 	if (!(this.startTime instanceof Date)) {
 		throw "StartTime Invalid: Must be a Date() - " + Object.keys(this.startTime);
@@ -237,6 +241,7 @@ var CompositeJob = function(job) {
 		this.task = t.entityId;
 		_taskObj = t;
 	};
+	
 	this.addChild = function(childjob) {
 		this.children.push(childjob);
 	};

@@ -128,7 +128,15 @@ var ProjectService = function() {
 		_project.addJob(jobObj);
 		return jobObj;
 	};
-	
+
+	var relevantFlows = function(flows, job) {
+		var ret = flows.filter(function(f) {
+			var from = f.getFromJob();
+			var to = f.getToJob();
+    		return ( from === job || to === job);
+  		});
+		return ret;
+	}	
 	this.validate = function(job, startTime, durationDays, resources) {
 		
 		// check parentJob conditions
@@ -149,15 +157,30 @@ var ProjectService = function() {
 
 	this.dependsOn = function(job) {
 		// flowMap[job]
-		// ret = [];
 		// for f in flowMap:
 		// 	if f.toJob == job
 		// 		ret.push(f.fromJob)
-		return [];
+		var rf = relevantFlows(_project.flows, job);
+		var ret = [];
+		for (var i = rf.length - 1; i >= 0; i--) {
+			var f = rf[i];
+			if(f.getToJob() == job) {
+				ret.push(f.getFromJob());
+			}
+		};
+		return ret;
 	};
 
 	this.enables = function(job) {
-		return [];
+		var rf = relevantFlows(_project.flows, job);
+		var ret = [];
+		for (var i = rf.length - 1; i >= 0; i--) {
+			var f = rf[i];
+			if(f.getFromJob() == job) {
+				ret.push(f.getToJob());
+			}
+		};
+		return ret;
 	};
 
 	this.addFlow = function(fromJob, toJob) {
@@ -167,10 +190,25 @@ var ProjectService = function() {
 	this.getResourceById = function(entityId) {
 		return _project.getResourceById(entityId);
 	};
+
+	this.updateFlows = function(flows, job, compositeJob) {
+		var rf = relevantFlows(flows, job);
+		for (var i = rf.length - 1; i >= 0; i--) {
+			var f = rf[i];
+			if(f.getFromJob() == job) {
+				f.setFromJob(compositeJob);
+			} 
+			else if(f.getToJob() == job) {
+				f.setToJob(compositeJob);
+			}
+		};
+	};
+
 	this.convertToComposite = function(job) {
 		var ret = new CompositeJob(job);
         _project.deleteJob(job);
         _project.addJob(ret);
+        this.updateFlows(_project.flows, job, ret);
         return ret;
     };
  
@@ -178,6 +216,7 @@ var ProjectService = function() {
         window.console.log(parent);
         window.console.log(child);
         parent.addChild(child);
+        child.setParent(parent);
 	};
 	dummyData();
 };
