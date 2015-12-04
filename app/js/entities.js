@@ -124,6 +124,11 @@ var Task = function(projectId, name, description, durationDays, resourcesRequire
 
 var JobStates = new Enum([ 'READY', 'RUNNING', 'COMPLETE' ]);
 // exports.JobStates = JobStates;
+Date.prototype.addDays = function(days)
+{
+    var dat = new Date(this.valueOf() + days * 24 * 60 * 60 * 1000 );
+    return dat;
+}
 
 var Job = function(projectId, name, task, startTime, percentComplete, state) {
 
@@ -142,6 +147,8 @@ var Job = function(projectId, name, task, startTime, percentComplete, state) {
 	this.entityId = uuid.v4();
 	var _taskObj = null;
 	this.isComposite = false;
+
+	this.getEndTime = function(){return this.startTime.addDays(_taskObj.durationDays)};
 
 	this.setParent = function(parent) {
 		this.parent = parent;
@@ -241,7 +248,7 @@ var CompositeJob = function(job) {
 		this.task = t.entityId;
 		_taskObj = t;
 	};
-	
+
 	this.addChild = function(childjob) {
 		this.children.push(childjob);
 	};

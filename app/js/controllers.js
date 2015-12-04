@@ -554,8 +554,8 @@ var ModalAddJobInstanceCtrl = function() {
       var newResources = $scope.data1_multipleSelect; 
       newResources = idsToResources(newResources, projectSvc);
       resources = resourcesUnion(resources, newResources);
-      var isValid = projectSvc.validate($scope.job, startTime, durationDays, resources);
-
+      var validation = projectSvc.validate($scope.job, startTime, durationDays, resources);
+      var isValid = validation[0];
       if(isValid) {
           if($scope.job) { //EDIT
 
@@ -593,12 +593,13 @@ var ModalAddJobInstanceCtrl = function() {
               generateFlows(links, graphNode, projectSvc);
             }
           }
+          $uibModalInstance.close();
         }
         else {
-          alert("Invalid details");
+          alert("Invalid details: " + validation[1]);
         }
 
-        $uibModalInstance.close();  
+          
 
     //    $uibModalInstance.close({rname1: $scope.r_name, rcost1: $scope.r_cost, rtype1: $scope.data.singleSelect, resources1: $scope.resources});  
   };

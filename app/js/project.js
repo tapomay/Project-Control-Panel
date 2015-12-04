@@ -28,6 +28,8 @@ var Project = function(name, startDate, resources, tasks, jobs, flows) {
 	var _resourcesMap = resources.toMap();
 	var _jobsMap = jobs.toMap();
 
+	var resDateJobs = {};
+
 	Project.load = function(obj) {
 		var res = [];
 		for(var i=0; i<obj.resources.length; i++) {
@@ -70,7 +72,7 @@ var Project = function(name, startDate, resources, tasks, jobs, flows) {
 			var toJobObj = ret.getJobById(f.toJob);
 			f.setToJob(toJobObj);
 		}
-
+		ret.refreshResourceAvailability();
 		ret._id = obj._id;
 		return ret;
 	};
@@ -103,6 +105,7 @@ var Project = function(name, startDate, resources, tasks, jobs, flows) {
 	this.addResource = function(resource) {
 		this.resources.push(resource);
 		_resourcesMap[resource.entityId] = resource;
+		resDateJobs[resource.entityId] = {};//init resource row
 	};
 	
 	this.deleteResource = function(resource) {
@@ -115,12 +118,52 @@ var Project = function(name, startDate, resources, tasks, jobs, flows) {
 			
 			this.jobs.push(job);
 			_jobsMap[job.entityId] = job;
+			this.updateResourceAvailability(job);
+			//mark resource as occupied
+			window.console.log('R2D2:resDateJobs: ');
+			window.console.log(resDateJobs);
 		}
 		else {
 			throw "Invalid task: " + job.task;
 		}
 	};
+
+	this.updateResourceAvailability = function(job){
+		var res = job.getTask().resourcesRequired;
+		var startTime = job.startTime;
+		if(res){
+			for (var i = res.length - 1; i >= 0; i--) {
+				var r = res[i];
+				for (var j = 0; j < job.getTask().durationDays; j++) {
+					var idate = startTime.addDays(j);
+					var resDateObj = resDateJobs[r.entityId];
+					if(!resDateObj) {
+						resDateObj = {};
+						resDateJobs[r.entityId] = resDateObj
+					}
+					var jarr = resDateObj[idate];
+					if(!jarr) {
+						jarr = [];
+						resDateJobs[r.entityId][idate] = jarr;
+					}
+					jarr.push(job.entityId);
+				}
+			};
+		}
+	};
+
+	this.refreshResourceAvailability = function() {
+		resDateJobs = {};
+		for(var i=0; i<jobs.length; i++) {
+			var j = jobs[i];
+			this.updateResourceAvailability(j);
+		}
+		window.console.log('3PO:resDateJobs: ');
+		window.console.log(resDateJobs);
+
+	};
 	
+
 	this.getName = function() {
 		return this.name;
 	};
@@ -155,6 +198,7 @@ var Project = function(name, startDate, resources, tasks, jobs, flows) {
         f1.setToJob(toJob);
         this.flows.push(f1);
 	};
+
  	this.deleteJob = function(job) {
         var i = this.jobs.indexOf(job);
         if(i !=-1) {
@@ -162,4 +206,33 @@ var Project = function(name, startDate, resources, tasks, jobs, flows) {
  
         }
 	};
+
+	this.isResourceAvailable = function(res, startTime, duration) {
+		var ret = true;
+		var nxtDate;
+		var i = startTime;
+		for (var i = 0; i < duration; i++) {
+			var idate = startTime.addDays(i);
+			for(var j=0; j < res.length; j++) {
+				var r = res[j];
+				var jobsConsuming = resDateJobs[r.entityId][idate];
+				if(jobsConsuming && jobsConsuming.length > 0) {
+					ret = false;
+					break;
+				}
+			}
+		}
+		return ret;
+	}
+
+	// this.nxtAvailableDate = function(resourceList, duration) {
+	// 	for(var j=0; j < resourceList.length; j++) {
+	// 		var r = resourceList[j];
+	// 		var jobsConsuming = resDateJobs[r.entityId][idate];
+	// 		if(jobsConsuming && jobsConsuming.length > 0) {
+	// 			ret = false;
+	// 			break;
+	// 		}
+	// 	}
+	// };
 };

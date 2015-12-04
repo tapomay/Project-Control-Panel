@@ -136,23 +136,41 @@ var ProjectService = function() {
     		return ( from === job || to === job);
   		});
 		return ret;
-	}	
+	}
+
 	this.validate = function(job, startTime, durationDays, resources) {
-		
+		var ret = [true, "OK"];
+		var projectedEndTime = startTime.addDays(durationDays);
 		// check parentJob conditions
 		// if parentJob:
 		// 	startime >= parentJob.startime and endTime < parentJob.endTime
+		if(job && !job.isComposite && job.parent) {
+			if(startTime < job.parent.startTime || projectedEndTime > job.parent.getEndTime()){
+				ret = [false, "Duration exceeds parent"];
+			}
+		}
 
 		// for each dependsOn:
 		// 	check startTime >= dependsOn.endTime
 
-		// for each enables:
-		// 	enables.startime >= endTime
+		if(job) {
+			var pre = this.dependsOn(job);
+			for (var i = pre.length - 1; i >= 0; i--) {
+				var p = pre[i];
+				if(startTime < p.getEndTime()) {
+					ret = [false, "Starts before predecessor"];
+					break;
+				}
+			}
+		}
 
 		// for each resource
 		// 	isAvailable(r, startime, endTime)
+		if(!_project.isResourceAvailable(resources, startTime, durationDays)) {
+			ret = [false, "Resource unavailable"];
+		}
 
-		return true; //TODO
+		return ret;
 	};
 
 	this.dependsOn = function(job) {
