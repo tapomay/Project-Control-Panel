@@ -336,6 +336,10 @@ var GanttController= function(){
 
 		for(var i=0; i<jobs.length; i++) {
 			var job = jobs[i];
+      var resources=[];
+      for(var r=0;r<job.getTask().resourcesRequired.length;r++){
+          resources.push(job.getTask().resourcesRequired[r].name)
+      }
 			//console.log(task.endDate.format("MM/DD/YYYY"));
 			var endTime = moment(job.startTime).add(job.getTask().durationDays,'days').toDate();
 			g.AddTaskItem(
@@ -347,7 +351,7 @@ var GanttController= function(){
 					'ff00ff', 
 					'', 
 					0,
-					'Harika',
+					resources,
 					0, 
 					0, 
 					'', 
